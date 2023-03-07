@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {string} from 'yup';
 import Strings from '../../constants/Strings';
-import styles from './HomeScreenStyle';
+import styles from './LogInStyle';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {ErrorMessage} from 'formik/dist/ErrorMessage';
@@ -23,7 +23,7 @@ const loginValidationSchema = yup.object().shape({
     ),
 });
 
-const HomeScreen = ({navigation}) => {
+const LogInScreen = ({navigation}) => {
   console.log(navigation, 'navigation');
 //   const [email, setEmail] = useState();
 //   const [Password, setPassword] = useState();
@@ -85,7 +85,7 @@ const HomeScreen = ({navigation}) => {
             style={styles.loginBtn}
             onPress={() => {
               handleSubmit();
-              navigation.navigate('Detail');
+              navigation.navigate('Home');
             }}>
             <Text style={styles.loginText}>{Strings.Login}</Text>
           </TouchableOpacity>
@@ -99,4 +99,4 @@ const HomeScreen = ({navigation}) => {
   );
 };
 
-export default HomeScreen;
+export default LogInScreen;

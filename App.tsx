@@ -1,18 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import HomeScreen from './app/modules/home/HomeScreen'
-import Navigation from './app/Routes/Navigation'
-
+import {View, Text} from 'react-native';
+import React from 'react';
+import HomeScreen from './app/modules/login/LogIn';
+import Navigation from './app/Routes/Navigation';
 
 const App = () => {
-
-
   return (
-      <>
-      <Navigation/>
-      </>
+    <>
+      <Navigation />
+    </>
+  );
+};
 
-  )
-}
-
-export default App
+export default App;
