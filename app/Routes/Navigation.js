@@ -1,39 +1,69 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable prettier/prettier */
+import { Alert, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LogInScreen from '../Screens/login/LogIn';
-import Home from '../Screens/HomeScreen';
+import HomeScreen from '../Screens/HomeScreen';
 import SplashScreen from '../Screens/splash/SplashScreen';
 import Screen1 from '../Screens/event_list/Screen1';
 import Screen2 from '../Screens/Screen2';
 import Screen3 from '../Screens/Screen3';
 import Screen4 from '../Screens/Screen4';
-import showDetails from '../Screens/event_detail/showDetails';
+import UserProfile from '../Screens/user_profile/UserProfile';
+import ShowDetails from '../Screens/event_detail/showDetails';
+import { Image } from 'react-native';
+
+// import showDetails from '../Screens/showDetails';
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='SplashScreen'>
-        <Stack.Screen 
-          name="SplashScreen" 
+      <Stack.Navigator initialRouteName="SplashScreen">
+        <Stack.Screen
+          name="SplashScreen"
           component={SplashScreen}
-          options={{headerShown: false}} 
+          options={{ headerShown: false }}
         />
-        <Stack.Screen 
-          name="LogIn" 
-          component={LogInScreen} 
+        <Stack.Screen
+          name="LogIn"
+          component={LogInScreen}
+          options={{
+            headerBackVisible: false,
+          }}
         />
-        <Stack.Screen 
-          name = "Home"
-          component={Home}
-          options = {{headerBackVisible: false}}
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+        // options={{
+        //   headerBackVisible: false,
+        //   headerRight: () => (
+        //     <TouchableOpacity onPress={() => navigation.navigate('UserProfile')}><Text>click</Text></TouchableOpacity>
+        //   ),
+        // }}
+
+        // options={({ navigation }) => ({
+        //   headerRight: () => (
+        //     <Button title="Update count" onPress={() => navigation.navigate('UseProfile')} />
+        //   ),
+        // })}
         />
-        <Stack.Screen name="Screen1" component={Screen1} options = {{headerBackVisible: false}}/>
+        <Stack.Screen name="Screen1" component={Screen1} options={({ navigation }) => ({
+          headerBackVisible: false,
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate('UserProfile')} >
+              <Image source={require("../assets/user1.png")} style={{ height: 30, width: 30, }} />
+            </TouchableOpacity>
+          ),
+        })} />
         <Stack.Screen name="Screen2" component={Screen2} />
         <Stack.Screen name="Screen3" component={Screen3} />
         <Stack.Screen name="Screen4" component={Screen4} />
-        <Stack.Screen name="showDetails" component={showDetails} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
+        <Stack.Screen name="showDetails" component={ShowDetails} />
+        {/* <Stack.Screen name="showDetails" component={showDetails} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
