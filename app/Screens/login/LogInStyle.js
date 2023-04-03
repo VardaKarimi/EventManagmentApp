@@ -1,4 +1,5 @@
-import {StyleSheet} from 'react-native';
+/* eslint-disable prettier/prettier */
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import { theme } from '../../core/style/theme';
 
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
   loginText: {
     color: 'white',
   },
+
   signinText: {
     color: 'blue',
   },
