@@ -1,10 +1,30 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Card } from 'react-native-paper';
+import { theme } from '../../core/style/theme';
+import Button from '../../Components/Button';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
 
 const UserProfile = ({ navigation }) => {
     const [userData, setUserData] = useState(null);
+
+    const googleSignOut = async () => {
+        try {
+            await AsyncStorage.removeItem('email');
+            await GoogleSignin.revokeAccess();
+            await GoogleSignin.signOut();
+
+            // eslint-disable-next-line no-catch-shadow, no-shadow
+        } catch (error) {
+            console.log(error);
+        }
+        navigation.navigate('LogIn');
+        console.log(userData);
+    };
 
     useEffect(() => {
         const getUserData = async () => {
@@ -26,19 +46,58 @@ const UserProfile = ({ navigation }) => {
     }
 
     return (
-        <View>
-            <Text style={styles.text}>First Name: {userData.firstName}</Text>
-            <Text style={styles.text}>Last Name: {userData.lastName}</Text>
-            <Text style={styles.text}>Email: {userData.email}</Text>
-            <Text style={styles.text}>Profilepic: {userData.profilePicUrl}</Text>
-        </View>
+        <Card style={styles.card}>
+            <Card.Cover source={userData.profilePicUrl ? { uri: userData.profilePicUrl } : require('../../assets/user.png')} style={styles.profilePic} />
+            <Card.Content>
+                <Card >
+                    <Card.Content>
+                        <View style={styles.small}>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>First Name:</Text>
+                            <Text style={[styles.text, { color: 'blue' }]}>{userData.firstName}</Text>
+                        </View>
+
+                        <View style={styles.small}>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Last Name:</Text>
+                            <Text style={[styles.text, { color: 'blue' }]}>{userData.lastName}</Text>
+                        </View>
+                        <View style={styles.small}>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Email:</Text>
+                            <Text style={[styles.text, { color: 'blue' }]}>{userData.email}</Text>
+                        </View>
+                        <Button onPress={googleSignOut}>
+                            <Text style={{ color: 'white' }}>SignOut</Text>
+                        </Button>
+                    </Card.Content>
+                </Card>
+            </Card.Content>
+        </Card>
     );
 };
 
 const styles = StyleSheet.create({
+    card: {
+        flex: 1,
+        margin: 20,
+        borderRadius: 10,
+        backgroundColor: '#D8D8D8',
+    },
+    small: {
+        marginLeft: -18,
+        flexDirection: 'row'
+    },
     text: {
+        margin: 10,
         fontSize: 20,
-        color: '#121330',
+        color: '#121330'
+    },
+    profilePic: {
+
+        width: 150,
+        height: 150,
+        alignSelf: 'center',
+        borderRadius: 100,
+        marginTop: 20,
+        marginBottom: 20,
     },
 })
 export default UserProfile;
