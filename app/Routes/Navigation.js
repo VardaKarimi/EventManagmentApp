@@ -8,7 +8,7 @@ import LogInScreen from '../Screens/login/LogIn';
 import HomeScreen from '../Screens/HomeScreen';
 import SplashScreen from '../Screens/splash/SplashScreen';
 import Screen1 from '../Screens/event_list/Screen1';
-import Screen2 from '../Screens/Screen2';
+import CreateEvent from '../Screens/create_event/CreateEvent';
 import Screen3 from '../Screens/Screen3';
 import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/UserProfile';
@@ -58,7 +58,7 @@ const Navigation = () => {
             </TouchableOpacity>
           ),
         })} />
-        <Stack.Screen name="Screen2" component={Screen2} />
+        <Stack.Screen name="CreateEvent" component={CreateEvent} />
         <Stack.Screen name="Screen3" component={Screen3} />
         <Stack.Screen name="Screen4" component={Screen4} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
