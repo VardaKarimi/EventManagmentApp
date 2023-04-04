@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
 import { theme } from '../../core/style/theme';
 import Button from '../../Components/Button';
+import styles from './user_profile_style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 
@@ -74,30 +75,4 @@ const UserProfile = ({ navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    card: {
-        flex: 1,
-        margin: 20,
-        borderRadius: 10,
-        backgroundColor: '#D8D8D8',
-    },
-    small: {
-        marginLeft: -18,
-        flexDirection: 'row'
-    },
-    text: {
-        margin: 10,
-        fontSize: 20,
-        color: '#121330'
-    },
-    profilePic: {
-
-        width: 150,
-        height: 150,
-        alignSelf: 'center',
-        borderRadius: 100,
-        marginTop: 20,
-        marginBottom: 20,
-    },
-})
 export default UserProfile;
