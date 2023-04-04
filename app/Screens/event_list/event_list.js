@@ -1,30 +1,41 @@
 /* eslint-disable prettier/prettier */
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { View, Text, ScrollView, Alert, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView} from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
-import TextInput from '../../Components/TextInput';
+import { TextInput } from 'react-native';
+import styles from './event_list_styles';
 
-const Screen1 = ({ navigation }) => {
-  const onPressShowDetails = (eventId) => {
-    navigation.navigate('showDetails', { eventId });
-  }
-  //SearchBar
+const EventList = ({route, navigation }) => {
   const [search, setSearch] = useState()
   const [eventData, setEventData] = useState(Eventdata)
   const [filteredData, setFilteredData] = useState()
-
   const [shouldShow, setShoulShow] = useState(true)
+  const [noResults,setNoResults] = useState(false)
+ 
+  
+
+  React.useEffect(()=>{
+    if(route.params && route.params.id){
+      const updatedEventData = eventData.filter(event => event.id !== route.params.id);
+      setEventData(updatedEventData);
+    
+    }
+  },[route.params]);
+
+  const onPressShowDetails = (eventId) => {
+    navigation.navigate('showDetails', { eventId });
+    
+  }
+
+  //SearchBar
 
   const searchFilterFunction = (text) => {
 
     if (text) {
-      // Inserted text is not blank
-      // Filter the eventData
-      // Update Filtered
+
       const newData = eventData.filter(
         function (item) {
           const itemData = item.Title
@@ -35,19 +46,24 @@ const Screen1 = ({ navigation }) => {
         });
       setFilteredData(newData);
       setSearch(text);
+      if (newData.length == 0) {
+        setNoResults(true);
+      } else {
+        setNoResults(false);
+      }
+      
     }
     else {
-      // Inserted text is blank
-      // Update FilteredDataSource with masterDataSource
       setFilteredData(eventData);
       setSearch(text);
+     
     }
   };
-  //to Display item
 
+  //to Display item
   const ItemView = ({ item }) => {
     return (
-      <Card key={item.id}>
+      <Card style={{margin:5, backgroundColor:"#D8D8D8"}} key={item.id}>
         <Card.Content>
           <Title>{item.Title}</Title>
         </Card.Content>
@@ -64,13 +80,15 @@ const Screen1 = ({ navigation }) => {
     )
   }
 
+  
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 37 }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' ,margin:25 }}>
       <ScrollView>
 
         <View>
           <TextInput onChangeText={(text) => searchFilterFunction(text)}
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
+            {noResults && <Text>No results found.</Text>}
           <FlatList
             data={filteredData}
             keyExtractor={(item, id) => id.toString()}
@@ -79,14 +97,14 @@ const Screen1 = ({ navigation }) => {
           />
         </View>
 
-        {shouldShow && Eventdata.map(event => (
-          <Card key={event.id}>
+        {shouldShow && eventData.map(event => (
+          <Card style={{backgroundColor:"#D8D8D8" , flex:1, marginBottom:20, borderColor:"#000000", borderWidth:0.5}}key={event.id}>
             <Card.Content>
-              <Title>{event.Title}</Title>
+              <Title style={styles.TitleStyle}>{event.Title}</Title>
             </Card.Content>
-            <Card.Cover source={{ uri: event.imageUrl }} />
+            <Card.Cover style={{ flex:1, padding:10, backgroundColor:"D8D8D8"}}source={{ uri: event.imageUrl }} />
             <Card.Content>
-              <Paragraph>{event.Description}</Paragraph>
+              <Paragraph style={styles.DescriptionStyle}>{event.Description}</Paragraph>
             </Card.Content>
             <Card.Actions>
               <Button onPress={() => onPressShowDetails(event.id)}>Show Details</Button>
@@ -104,15 +122,5 @@ const Screen1 = ({ navigation }) => {
 
   );
 }
-export default Screen1;
-const styles = StyleSheet.create({
-  ItemView: {
-    fontSize: 20,
-    textAlign: 'center',
-  },
-  searchBar: {
-    borderColor: "#00235B",
-    borderWidth: 1,
+export default EventList;
 
-  }
-})

@@ -7,13 +7,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LogInScreen from '../Screens/login/LogIn';
 import HomeScreen from '../Screens/HomeScreen';
 import SplashScreen from '../Screens/splash/SplashScreen';
-import Screen1 from '../Screens/event_list/Screen1';
+import EventList from '../Screens/event_list/event_list';
 import CreateEvent from '../Screens/create_event/CreateEvent';
 import Screen3 from '../Screens/Screen3';
 import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/UserProfile';
-import ShowDetails from '../Screens/event_detail/showDetails';
+import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
+
 
 // import showDetails from '../Screens/showDetails';
 const Navigation = () => {
@@ -50,7 +51,7 @@ const Navigation = () => {
         //   ),
         // })}
         />
-        <Stack.Screen name="Screen1" component={Screen1} options={({ navigation }) => ({
+        <Stack.Screen name="EventList" component={EventList} options={({ navigation }) => ({
           headerBackVisible: false,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate('UserProfile')} >
@@ -62,9 +63,8 @@ const Navigation = () => {
         <Stack.Screen name="Screen3" component={Screen3} />
         <Stack.Screen name="Screen4" component={Screen4} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen name="showDetails" component={ShowDetails} />
-        {/* <Stack.Screen name="showDetails" component={showDetails} /> */}
-      </Stack.Navigator>
+        <Stack.Screen name="showDetails" component={ShowDetails} options={{title:''}} />
+      </Stack.Navigator> 
     </NavigationContainer>
   );
 };
