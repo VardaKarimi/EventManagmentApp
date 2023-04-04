@@ -59,7 +59,7 @@ const LogInScreen = ({ navigation }) => {
       console.log(user);
       AsyncStorage.setItem('user', JSON.stringify(user));
       AsyncStorage.setItem('email', JSON.stringify(user.email));
-      navigation.navigate('Screen1');
+      navigation.navigate('Home');
       // eslint-disable-next-line no-catch-shadow, no-shadow
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
