@@ -4,14 +4,14 @@ import { Alert, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-n
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LogInScreen from '../Screens/login/LogIn';
+import LogInScreen from '../Screens/login/login';
 import HomeScreen from '../Screens/HomeScreen';
 import SplashScreen from '../Screens/splash/SplashScreen';
 import EventList from '../Screens/event_list/event_list';
-import CreateEvent from '../Screens/create_event/CreateEvent';
+import CreateEvent from '../Screens/create_event/create_event';
 import Screen3 from '../Screens/Screen3';
 import Screen4 from '../Screens/Screen4';
-import UserProfile from '../Screens/user_profile/UserProfile';
+import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
 

@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { TouchableOpacity, View, BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
-import styles from './LogInStyle';
+import styles from './login_style';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import AsyncStorage from '@react-native-async-storage/async-storage';
