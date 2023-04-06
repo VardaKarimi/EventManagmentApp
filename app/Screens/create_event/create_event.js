@@ -1,6 +1,6 @@
-// Example: Example of SQLite Database in React Native
-// https://aboutreact.com/example-of-sqlite-database-in-react-native
-// Screen to register the user
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/self-closing-comp */
 
 import React, {useState} from 'react';
 import {
@@ -11,10 +11,14 @@ import {
   Alert,
   SafeAreaView,
   Text,
+  StyleSheet,
+  Image,
 } from 'react-native';
 import Mybutton from '../../Components/Mybutton';
 import Mytextinput from '../../Components/Mytextinput';
 import {openDatabase} from 'react-native-sqlite-storage';
+import Button from '../../Components/Button';
+import FilePicker, { types } from 'react-native-document-picker';
 
 var db = openDatabase({name: 'EventDatabase1.db'});
 
@@ -24,16 +28,35 @@ const CreateEvent = ({navigation}) => {
   let [EventTime, setEventTime] = useState('');
   let [EventAddress, setEventAddress] = useState('');
   let [EventDescription, setEventDescription] = useState('');
+  let [EventImagePath, setEventImagePath] = useState('');
+
+  const handleFilePicker = async () => {
+    try {
+      const response = await FilePicker.pick({
+        presentationStyle: 'fullScreen',
+        allowMultiSelection: true,
+        type: [types.images],
+      });
+
+      console.log(response.map(file => file.uri));
+      if (response.length > 0) {
+        setEventImagePath(response[0].uri);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 
   let register_event = () => {
-    console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
+    console.log(EventName, EventDate, EventTime,EventAddress, EventDescription , EventImagePath);
 
     if (!EventName) {
       alert('Please fill name');
       return;
     }
     if (!EventDate) {
-      alert('Please fill date');
+     alert('Please fill date');
       return;
     }
     if (!EventTime) {
@@ -42,7 +65,7 @@ const CreateEvent = ({navigation}) => {
     }
 
     if (!EventAddress) {
-      alert('Please fill Address');
+     alert('Please fill Address');
       return;
     }
     if (!EventDescription) {
@@ -54,23 +77,26 @@ const CreateEvent = ({navigation}) => {
     db.transaction(function (tx) {
       //console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
             tx.executeSql(
-        'INSERT INTO table_event_1 (event_name, event_date, event_time, event_address, event_description) VALUES (?,?,?,?,?)',
-        [EventName, EventDate,EventTime, EventAddress, EventDescription],
+        'INSERT INTO table_event_2 (event_name, event_date, event_time, event_address, event_description, event_image) VALUES (?,?,?,?,?,?)',
+        [EventName, EventDate,EventTime, EventAddress, EventDescription, EventImagePath],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
-          if (results.rowsAffected > 0) {
-            Alert.alert(
-              'Success',
-              'Event Registered Successfully',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
-                },
-              ],
-              {cancelable: false},
-            );
-          } else alert('Registration Failed');
+          if (results.rowsAffected > 0){
+            Alert.alert('Event Created Successfully');
+            navigation.navigate('Home')
+            // alert(
+            //   'Success',
+            //   'Event Registered Successfully',
+            //   [
+            //     {
+            //       text: 'Ok',
+           
+              //   },
+              // ],
+              // {cancelable: false},
+            // );
+          }
+           else alert('Registration Failed');
         },
       );
     });
@@ -119,6 +145,25 @@ const CreateEvent = ({navigation}) => {
                 multiline={true}
                 style={{textAlignVertical: 'top', padding: 10}}
               />
+             {/* <Mytextinput
+  placeholder="Enter path"
+  onChangeText={setEventImagePath}
+  maxLength={225}
+  numberOfLines={5}
+  multiline={true}
+  value={EventImagePath}
+  style={{textAlignVertical: 'top', padding: 10}}
+/> */}
+           {EventImagePath !== '' && <Image source={{uri: EventImagePath}} style={{width:200, alignSelf:'center',height:200 , marginTop: 20}}></Image>}
+           <Button style={styles.btn} onPress={() => {
+              if (EventImagePath !== '') {
+                setEventImagePath('');
+              } else {
+                handleFilePicker();
+              }
+            }}>
+              {EventImagePath !== '' ? 'Remove Image' : 'Enter Image'}
+            </Button>
               <Mybutton title="Submit" customClick={register_event} />
             </KeyboardAvoidingView>
           </ScrollView>
@@ -132,6 +177,15 @@ const CreateEvent = ({navigation}) => {
 
 
 export default CreateEvent;
+const styles = StyleSheet.create({
+  btn:{
+    marginTop:30,
+    justifyContent:'center',
+    alignSelf:'center',
+    alignItems: 'center',
+    width: 260,
+  }
+})
 
 // import * as React from 'react';
 // import { 
