@@ -5,11 +5,12 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
 import { TextInput } from 'react-native';
 import styles from './event_list_styles';
+import { theme } from '../../core/style/theme';
 
 import FloatingButton from '../../Components/FloatingButton';
 
@@ -67,13 +68,13 @@ const EventList = ({ route, navigation }) => {
   //to Display item
   const ItemView = ({ item }) => {
     return (
-      <Card style={{ margin: 5, backgroundColor: "#D8D8D8" }} key={item.id}>
+      <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: "#000000", borderWidth: 0.5 }} key={item.id}>
         <Card.Content>
-          <Title>{item.Title}</Title>
+          <Title style={styles.TitleStyle}>{item.Title}</Title>
         </Card.Content>
-        <Card.Cover source={{ uri: item.imageUrl }} />
+        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: "D8D8D8" }} source={{ uri: item.imageUrl }} />
         <Card.Content>
-          <Paragraph>{item.Description}</Paragraph>
+          <Paragraph style={styles.DescriptionStyle}>{item.Description}</Paragraph>
         </Card.Content>
         <Card.Actions>
           <Button onPress={() => onPressShowDetails(item.id)}>Show Details</Button>
@@ -87,23 +88,26 @@ const EventList = ({ route, navigation }) => {
 
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 25 }}>
+    
+    <View style={{flex:1, backgroundColor:theme.colors.primary }}>
+      <StatusBar backgroundColor={theme.colors.primary}/>
       <ScrollView>
 
         <View>
           <TextInput onChangeText={(text) => searchFilterFunction(text)}
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
-          {noResults && <Text>No results found.</Text>}
+          {noResults && <Text style={{flex:1,color:'#000000',fontSize:20,justifyContent:'center',alignSelf:'center'}}>No results found.</Text>}
           <FlatList
             data={filteredData}
             keyExtractor={(item, id) => id.toString()}
             ItemSeparatorComponent={""}
             renderItem={ItemView}
+            
           />
         </View>
 
         {shouldShow && eventData.map(event => (
-          <Card style={{ backgroundColor: "#D8D8D8", flex: 1, marginBottom: 20, borderColor: "#000000", borderWidth: 0.5 }} key={event.id}>
+          <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: "#000000", borderWidth: 0.5 }} key={event.id}>
             <Card.Content>
               <Title style={styles.TitleStyle}>{event.Title}</Title>
             </Card.Content>
@@ -112,19 +116,18 @@ const EventList = ({ route, navigation }) => {
               <Paragraph style={styles.DescriptionStyle}>{event.Description}</Paragraph>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={() => onPressShowDetails(event.id)}>Show Details</Button>
+              <Button onPress={() => onPressShowDetails(event.id)} style={{borderColor:theme.colors.primary}}><Text style={{color:theme.colors.primary}}>Show Details</Text></Button>
             </Card.Actions>
           </Card>
         ))
         }
 
 
-        <Button title="Go to Home" onPress={() => navigation.navigate('Home')} >Go to Home</Button>
-        <Button title="Go back" onPress={() => navigation.goBack()}>Go back</Button>
+       
       </ScrollView>
       <FloatingButton navigation={navigation} />
     </View>
-
+  
 
 
   );

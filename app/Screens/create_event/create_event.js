@@ -65,7 +65,7 @@ const CreateEvent = ({navigation}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
+                  onPress: () => navigation.navigate('EventList'),
                 },
               ],
               {cancelable: false},

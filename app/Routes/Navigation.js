@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-n
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LogInScreen from '../Screens/login/login';
+import LogInScreen from '../Screens/login/LogIn';
 import HomeScreen from '../Screens/HomeScreen';
 import SplashScreen from '../Screens/splash/SplashScreen';
 import EventList from '../Screens/event_list/event_list';
@@ -14,6 +14,8 @@ import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
+import CreateTicket from '../Screens/event_detail/Menu/Create_ticket';
+import { theme } from '../core/style/theme';
 
 
 // import showDetails from '../Screens/showDetails';
@@ -38,32 +40,27 @@ const Navigation = () => {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-        // options={{
-        //   headerBackVisible: false,
-        //   headerRight: () => (
-        //     <TouchableOpacity onPress={() => navigation.navigate('UserProfile')}><Text>click</Text></TouchableOpacity>
-        //   ),
-        // }}
-
-        // options={({ navigation }) => ({
-        //   headerRight: () => (
-        //     <Button title="Update count" onPress={() => navigation.navigate('UseProfile')} />
-        //   ),
-        // })}
         />
         <Stack.Screen name="EventList" component={EventList} options={({ navigation }) => ({
           headerBackVisible: false,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate('UserProfile')} >
-              <Image source={require("../assets/user1.png")} style={{ height: 30, width: 30, }} />
+              <Image source={require("../assets/userbtn.png")} style={{ height: 30, width: 30,}} />
             </TouchableOpacity>
           ),
+          headerStyle:{
+            backgroundColor:theme.colors.primary
+          },
+          title:''
         })} />
         <Stack.Screen name="CreateEvent" component={CreateEvent} />
         <Stack.Screen name="Screen3" component={Screen3} />
         <Stack.Screen name="Screen4" component={Screen4} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen name="showDetails" component={ShowDetails} options={{title:''}} />
+        <Stack.Screen name="showDetails" component={ShowDetails} options={{title:'',headerStyle:{
+            backgroundColor:theme.colors.primary
+          },}} />
+        <Stack.Screen name='CreateTicket' component={CreateTicket} options={{title:'',headerStyle:{backgroundColor:theme.colors.primary}}}/>
       </Stack.Navigator> 
     </NavigationContainer>
   );
