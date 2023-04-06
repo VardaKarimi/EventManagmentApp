@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 // Example: Example of SQLite Database in React Native
 // https://aboutreact.com/example-of-sqlite-database-in-react-native
 // Custom Button
 
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet} from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const Mybutton = (props) => {
   return (

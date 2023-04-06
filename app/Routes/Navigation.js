@@ -14,13 +14,11 @@ import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
-import CreateTicket from '../Screens/event_detail/Menu/Create_ticket';
-import { theme } from '../core/style/theme';
 
 
-// import showDetails from '../Screens/showDetails';
-const Navigation = () => {
-  const Stack = createNativeStackNavigator();
+  // import showDetails from '../Screens/showDetails';
+  const Navigation = ({ }) => {
+    const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer>
@@ -66,4 +64,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+  export default Navigation;

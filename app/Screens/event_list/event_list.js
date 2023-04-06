@@ -3,16 +3,19 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { View, Text, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
-import { TextInput } from 'react-native';
+import { TextInput, BackHandler, Alert } from 'react-native';
 import styles from './event_list_styles';
 import { theme } from '../../core/style/theme';
-
+import { openDatabase } from 'react-native-sqlite-storage';
 import FloatingButton from '../../Components/FloatingButton';
+
+
+var db = openDatabase({ name: 'EventDatabase1.db' });
 
 const EventList = ({ route, navigation }) => {
   const [search, setSearch] = useState()
@@ -20,6 +23,48 @@ const EventList = ({ route, navigation }) => {
   const [filteredData, setFilteredData] = useState()
   const [shouldShow, setShoulShow] = useState(true)
   const [noResults, setNoResults] = useState(false)
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure to exit ?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'YES', onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_event_2'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS table_event', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_event_2(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name VARCHAR(20), event_date INT(10), event_time INT(10), event_address VARCHAR(255), event_description VARCHAR(255), event_image VARCHAR(255))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
 
 
   React.useEffect(() => {
