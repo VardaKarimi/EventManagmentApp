@@ -2,6 +2,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Button from './Button'
+import { theme } from '../core/style/theme'
 
 
 const FloatingButton = ({ navigation }) => {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#007bff',
+        backgroundColor:'#FFB100' ,
         borderRadius: 30,
         width: 60,
         height: 60,

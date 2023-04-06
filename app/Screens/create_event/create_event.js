@@ -81,22 +81,19 @@ const CreateEvent = ({navigation}) => {
         [EventName, EventDate,EventTime, EventAddress, EventDescription, EventImagePath],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
-          if (results.rowsAffected > 0){
-            Alert.alert('Event Created Successfully');
-            navigation.navigate('Home')
-            // alert(
-            //   'Success',
-            //   'Event Registered Successfully',
-            //   [
-            //     {
-            //       text: 'Ok',
-           
-              //   },
-              // ],
-              // {cancelable: false},
-            // );
-          }
-           else alert('Registration Failed');
+          if (results.rowsAffected > 0) {
+            Alert.alert(
+              'Success',
+              'Event Registered Successfully',
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => navigation.navigate('EventList'),
+                },
+              ],
+              {cancelable: false},
+            );
+          } else alert('Registration Failed');
         },
       );
     });
