@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, BackHandler } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
@@ -18,7 +18,6 @@ const UserProfile = ({ navigation }) => {
             await AsyncStorage.removeItem('email');
             await GoogleSignin.revokeAccess();
             await GoogleSignin.signOut();
-
             // eslint-disable-next-line no-catch-shadow, no-shadow
         } catch (error) {
             console.log(error);

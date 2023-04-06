@@ -1,6 +1,8 @@
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable prettier/prettier */
 
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View, SafeAreaView } from 'react-native';
+import { FlatList, Text, View, SafeAreaView, Image } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
@@ -10,7 +12,7 @@ const Screen3 = () => {
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM table_event_1', [], (tx, results) => {
+      tx.executeSql('SELECT * FROM table_event_2', [], (tx, results) => {
         var temp = [];
         for (let i = 0; i < results.rows.length; ++i)
           temp.push(results.rows.item(i));
@@ -38,6 +40,11 @@ const Screen3 = () => {
         <Text>Time: {item.event_time}</Text>
         <Text>Address: {item.event_address}</Text>
         <Text>Description: {item.event_description}</Text>
+        <Text>Uri: {item.event_image}</Text>
+        <Image
+          source={{ uri: item.event_image }}
+          style={{ width: '100%', height: 200, marginTop: 10 }}
+        />
       </View>
     );
   };

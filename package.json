@@ -19,6 +19,7 @@
     "formik": "^2.2.9",
     "react": "18.2.0",
     "react-native": "0.71.3",
+    "react-native-document-picker": "^8.2.0",
     "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-material-menu": "^2.0.0",

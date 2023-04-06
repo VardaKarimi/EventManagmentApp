@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
 import React, { useRef, useState, useEffect } from 'react';
-import { TouchableOpacity, View, BackHandler } from 'react-native';
+import { TouchableOpacity, View, BackHandler, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
 import styles from './login_style';
@@ -38,8 +38,33 @@ const LogInScreen = ({ navigation }) => {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure to exit ?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'YES', onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+
   useEffect(() => {
     GoogleSignin.configure();
+
+
   }, []);
 
   const googleLogin = async () => {
@@ -59,7 +84,7 @@ const LogInScreen = ({ navigation }) => {
       console.log(user);
       AsyncStorage.setItem('user', JSON.stringify(user));
       AsyncStorage.setItem('email', JSON.stringify(user.email));
-      navigation.navigate('Home');
+      navigation.navigate('EventList');
       // eslint-disable-next-line no-catch-shadow, no-shadow
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -196,9 +221,6 @@ const LogInScreen = ({ navigation }) => {
           {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
           <Button onPress={googleLogin}>
             <Text style={styles.loginText}>SignIn With Google</Text>
-          </Button>
-          <Button onPress={googleSignOut}>
-            <Text style={styles.loginText}>SignOut</Text>
           </Button>
         </Background>
       )}
