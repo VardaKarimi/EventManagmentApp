@@ -13,8 +13,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 10,
     fontSize: 15,
-    backgroundColor:theme.colors.secondary,
-    borderRadius:10
+    padding: 10,
+    backgroundColor: theme.colors.secondary,
+    borderRadius: 10
 
   },
   fabStyle: {
