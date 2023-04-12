@@ -10,7 +10,8 @@ const styles = StyleSheet.create({
     },
     small: {
         marginLeft: -18,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        // flexWrap: 'wrap'
     },
     text: {
         margin: 10,

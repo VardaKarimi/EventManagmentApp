@@ -11,11 +11,8 @@ import Eventdata from '../../core/constants/EventString';
 import { TextInput, BackHandler, Alert } from 'react-native';
 import styles from './event_list_styles';
 import { theme } from '../../core/style/theme';
-import { openDatabase } from 'react-native-sqlite-storage';
 import FloatingButton from '../../Components/FloatingButton';
 
-
-var db = openDatabase({ name: 'EventDatabase1.db' });
 
 const EventList = ({ route, navigation }) => {
   const [search, setSearch] = useState()
@@ -24,48 +21,33 @@ const EventList = ({ route, navigation }) => {
   const [shouldShow, setShoulShow] = useState(true)
   const [noResults, setNoResults] = useState(false)
 
+
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure to exit ?', [
+      Alert.alert('Hold on!', 'Are you sure you want to leave the app?', [
         {
           text: 'Cancel',
           onPress: () => null,
           style: 'cancel',
         },
-        { text: 'YES', onPress: () => BackHandler.exitApp() },
+        {
+          text: 'YES',
+          onPress: () => BackHandler.exitApp(),
+        },
       ]);
       return true;
     };
 
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      backAction,
+      () => {
+        if (navigation.isFocused()) {
+          return backAction();
+        }
+      },
     );
-
     return () => backHandler.remove();
-  }, []);
-
-
-  useEffect(() => {
-    db.transaction(function (txn) {
-      txn.executeSql(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_event_2'",
-        [],
-        function (tx, res) {
-          console.log('item:', res.rows.length);
-          if (res.rows.length === 0) {
-            txn.executeSql('DROP TABLE IF EXISTS table_event', []);
-            txn.executeSql(
-              'CREATE TABLE IF NOT EXISTS table_event_2(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name VARCHAR(20), event_date INT(10), event_time INT(10), event_address VARCHAR(255), event_description VARCHAR(255), event_image VARCHAR(255))',
-              [],
-            );
-          }
-        },
-      );
-    });
-
-  }, []);
-
+  },)
 
   React.useEffect(() => {
     if (route.params && route.params.id) {
@@ -77,8 +59,8 @@ const EventList = ({ route, navigation }) => {
 
   const onPressShowDetails = (eventId) => {
     navigation.navigate('showDetails', { eventId });
-
   }
+
 
   //SearchBar
 
@@ -113,11 +95,11 @@ const EventList = ({ route, navigation }) => {
   //to Display item
   const ItemView = ({ item }) => {
     return (
-      <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: "#000000", borderWidth: 0.5 }} key={item.id}>
+      <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: '#000000', borderWidth: 0.5 }} key={item.id}>
         <Card.Content>
           <Title style={styles.TitleStyle}>{item.Title}</Title>
         </Card.Content>
-        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: "D8D8D8" }} source={{ uri: item.imageUrl }} />
+        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: 'D8D8D8' }} source={{ uri: item.imageUrl }} />
         <Card.Content>
           <Paragraph style={styles.DescriptionStyle}>{item.Description}</Paragraph>
         </Card.Content>
@@ -133,46 +115,46 @@ const EventList = ({ route, navigation }) => {
 
 
   return (
-    
-    <View style={{flex:1, backgroundColor:theme.colors.primary }}>
-      <StatusBar backgroundColor={theme.colors.primary}/>
+
+    <View style={{ flex: 1, backgroundColor: theme.colors.primary }}>
+      <StatusBar backgroundColor={theme.colors.primary} />
       <ScrollView>
 
         <View>
           <TextInput onChangeText={(text) => searchFilterFunction(text)}
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
-          {noResults && <Text style={{flex:1,color:'#000000',fontSize:20,justifyContent:'center',alignSelf:'center'}}>No results found.</Text>}
+          {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
           <FlatList
             data={filteredData}
             keyExtractor={(item, id) => id.toString()}
-            ItemSeparatorComponent={""}
+            ItemSeparatorComponent={''}
             renderItem={ItemView}
-            
+
           />
         </View>
 
         {shouldShow && eventData.map(event => (
-          <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: "#000000", borderWidth: 0.5 }} key={event.id}>
+          <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: '#000000', borderWidth: 0.5 }} key={event.id}>
             <Card.Content>
               <Title style={styles.TitleStyle}>{event.Title}</Title>
             </Card.Content>
-            <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: "D8D8D8" }} source={{ uri: event.imageUrl }} />
+            <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: 'D8D8D8' }} source={{ uri: event.imageUrl }} />
             <Card.Content>
               <Paragraph style={styles.DescriptionStyle}>{event.Description}</Paragraph>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={() => onPressShowDetails(event.id)} style={{borderColor:theme.colors.primary}}><Text style={{color:theme.colors.primary}}>Show Details</Text></Button>
+              <Button onPress={() => onPressShowDetails(event.id)} style={{ borderColor: theme.colors.primary }}><Text style={{ color: theme.colors.primary }}>Show Details</Text></Button>
             </Card.Actions>
           </Card>
         ))
         }
 
 
-       
+
       </ScrollView>
       <FloatingButton navigation={navigation} />
     </View>
-  
+
 
 
   );

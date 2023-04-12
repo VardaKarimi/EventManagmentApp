@@ -1,3 +1,4 @@
+/* eslint-disable no-sequences */
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
 import React, { useRef, useState, useEffect } from 'react';
@@ -12,11 +13,14 @@ import Background from '../../Components/Background';
 import Header from '../../Components/Header';
 import Button from '../../Components/Button';
 import staticData from '../../core/constants/StaticData';
+import { openDatabase } from 'react-native-sqlite-storage';
 import Logo2 from '../../Components/Logo2';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+
+var db = openDatabase({ name: 'EventDatabase1.db' });
 
 const loginValidationSchema = yup.object().shape({
   email: yup
@@ -62,6 +66,49 @@ const LogInScreen = ({ navigation }) => {
 
 
   useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_event'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS table_event', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_event(user_id VARCHAR(20), event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name VARCHAR(20), event_date INT(10), event_time INT(10), event_address VARCHAR(255), event_description VARCHAR(255), event_image VARCHAR(255))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
+
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='user_details'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS user_details', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS user_details(user_id VARCHAR(20), first_name VARCHAR(30), last_name VARCHAR(30), email_id VARCHAR(50), profilr_url VARCHAR(300))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
+
+
+
+
+  useEffect(() => {
     GoogleSignin.configure();
 
 
@@ -74,6 +121,7 @@ const LogInScreen = ({ navigation }) => {
       console.log('User Info', userInfo);
 
       const user = {
+        id: userInfo.user.id,
         firstName: userInfo.user.givenName,
         lastName: userInfo.user.familyName,
         email: userInfo.user.email,
@@ -83,10 +131,28 @@ const LogInScreen = ({ navigation }) => {
       // Object.assign(userModel, user);
       console.log(user);
       AsyncStorage.setItem('user', JSON.stringify(user));
+      AsyncStorage.setItem('userId', JSON.stringify(user.id));
       AsyncStorage.setItem('email', JSON.stringify(user.email));
-      navigation.navigate('EventList');
-      // eslint-disable-next-line no-catch-shadow, no-shadow
-    } catch (error) {
+
+
+      db.transaction(function (tx) {
+        console.log(user.firstName);
+        tx.executeSql(
+          'INSERT INTO user_details(user_id, first_name, last_name, email_id, profilr_url) VALUES (?,?,?,?,?)',
+          [user.id, user.firstName, user.lastName, user.email, user.profilePicUrl],
+          (tx, results) => {
+            console.log('User Results', results.rowsAffected);
+          },
+        );
+      });
+      navigation.navigate('Drawer');
+
+    }
+
+
+
+    // eslint-disable-next-line no-catch-shadow, no-shadow
+    catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error);
         // user cancelled the login flow
