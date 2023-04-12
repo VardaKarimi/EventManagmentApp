@@ -14,9 +14,9 @@ import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
+import DrawerScreen from '../Screens/drawer_navigation/drawer_screen';
 import { theme } from '../core/style/theme';
 import CreateTicket from '../Screens/event_detail/Menu/Create_ticket';
-import DrawerScreen from '../Screens/drawer_navigation/drawer_screen';
 
 
 // import showDetails from '../Screens/showDetails';

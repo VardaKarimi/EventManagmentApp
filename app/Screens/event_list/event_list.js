@@ -47,7 +47,49 @@ const EventList = ({ route, navigation }) => {
       },
     );
     return () => backHandler.remove();
-  },)
+  }, []);
+
+
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_event_2'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS table_event', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_event_2(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name VARCHAR(20), event_date INT(10), event_time INT(10), event_address VARCHAR(255), event_description VARCHAR(255), event_image VARCHAR(255))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
+
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_ticket'",
+        [],
+        function (tx, res) {
+          // console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS table_ticket', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_ticket(ticket_id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INT(10), ticket_type VARCHAR(20), ticket_price DECIMAL(10,2), ticket_valid_date INT(10))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
+
 
   React.useEffect(() => {
     if (route.params && route.params.id) {
@@ -58,7 +100,8 @@ const EventList = ({ route, navigation }) => {
   }, [route.params]);
 
   const onPressShowDetails = (eventId) => {
-    navigation.navigate('showDetails', { eventId });
+    navigation.navigate('showDetails', eventId );
+
   }
 
 
@@ -149,8 +192,7 @@ const EventList = ({ route, navigation }) => {
         ))
         }
 
-
-
+       
       </ScrollView>
       <FloatingButton navigation={navigation} />
     </View>

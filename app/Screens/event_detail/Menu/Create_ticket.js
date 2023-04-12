@@ -1,83 +1,145 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { StyleSheet } from 'react-native';
 import { TextInput } from "react-native";
-import DatePicker from "react-native-date-picker";
 import { TouchableOpacity } from "react-native";
 import { Image } from 'react-native'
 import { theme } from "../../../core/style/theme";
+import { openDatabase } from 'react-native-sqlite-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Mytextinput from "../../../Components/Mytextinput";
 
 
+var db = openDatabase({ name: 'EventDatabase1.db' });
 
 
-function CreateTicket(){
+function CreateTicket({ navigation, route }) {
 
-    const[date,setDate] = useState(new Date())
-    const[shouldShow,setShouldShow] = useState(false)
+  const [ticketType, setTicketType] = useState()
+  const [ticketPrice, setTicketPrice] = useState()
+  const [date, setDate] = useState('')
+  const [shouldShow, setShouldShow] = useState(false)
+  const eventId = route.params;
+
+  const handleDateChange = (event, selectedDate) => {
+
+    const currentDate = selectedDate || EventDate;
+    setShouldShow(false);
+    setDate(currentDate.toISOString());
+
+  };
+  const handleShow = ()=>{
+    setShouldShow(true)
+  }
+
+  const generateTicket = () => {
+    if (!ticketType) {
+      Alert.alert('Please Enter Ticket Type.');
+      return;
+    }
+    if (!ticketPrice) {
+      Alert.alert('Please Enter Price.');
+      return;
+    }
+    if (!date) {
+      Alert.alert("Please provide date");
+      return;
+    }
 
 
-    return(
-        <View style={CreateTicket_styles.mainContainer}>
-            <View style={CreateTicket_styles.ViewStyle}>
-              <Text style={CreateTicket_styles.TextStyle}> Type of Ticket: </Text>
-              <TextInput placeholder="EX. Silver,Gold,Platinum" style={CreateTicket_styles.TextInputStyle}/>
-            </View>
+    db.transaction(function (tx) {
+      console.log(ticketType, ticketPrice, date, eventId)
+      tx.executeSql(
+        'INSERT INTO table_ticket (event_id, ticket_type, ticket_price,ticket_valid_date ) VALUES (?,?,?,?)',
+        [eventId, ticketType, ticketPrice, date],
+        (tx, results) => {
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            navigation.navigate('showDetails', eventId)
 
-            <View style={CreateTicket_styles.ViewStyle}>
-              <Text style={CreateTicket_styles.TextStyle}> Enter price: </Text>
-              <TextInput placeholder="In Rs." style={CreateTicket_styles.TextInputStyle} keyboardType='numeric'/>
-            </View>
+          } else Alert.alert('Generation Failed');
+        },
+      );
+    });
 
-            <View style={CreateTicket_styles.ViewStyle}>
-              <Text style={CreateTicket_styles.TextStyle}> Valid upto:</Text>
-              <TouchableOpacity onPress={()=>setShouldShow(!shouldShow)}>
-                <Image source={require('../../../assets/calendar.png')} style={{width:30,height:30}}/>
-              </TouchableOpacity>
-              
-              <View>
-              {shouldShow
-              ?
-              (
-              <DatePicker style={{width:250,height:200}} date={date} onDateChange={setDate} />
-              )
-              :
-              null}
-              </View>
-              <Text>{date.toLocaleString()}</Text>
-            </View>
-            
-        </View>
-    )
+  };
+
+
+  return (
+    <View style={CreateTicket_styles.mainContainer}>
+      <View style={CreateTicket_styles.ViewStyle}>
+        <Mytextinput placeholder="Enter Ticket Type" maxLength={8} style={CreateTicket_styles.TextInputStyle} onChangeText={(text) => setTicketType(text)} />
+      </View>
+
+      <View style={CreateTicket_styles.ViewStyle}>
+        <Mytextinput placeholder="Enter Price" maxLength={4} style={CreateTicket_styles.TextInputStyle} keyboardType='numeric' onChangeText={(text) => setTicketPrice(text)} />
+      </View>
+
+      <View style={CreateTicket_styles.ViewStyle}>
+        
+        <Mytextinput
+          style={CreateTicket_styles.TextInputStyle}
+          
+          editable={false}
+          placeholder="Valid Upto Date"
+          value={date ? date.toString() : ''}
+          iconName = {'calendar-outline'}
+          handleIconPress = {handleShow}
+        />
+        {shouldShow && (
+          <DateTimePicker
+            value={new Date()}
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
+      </View>
+
+      <View>
+        <TouchableOpacity onPress={generateTicket}>
+          <Text style={CreateTicket_styles.btn}>Generate Ticket</Text>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  )
 }
 const CreateTicket_styles = StyleSheet.create({
-    mainContainer:{
-        flex:1,
-        backgroundColor:theme.colors.secondary
-    },
-    ViewStyle:{
-        flexDirection:'row',
-        alignItems:'center'
+  mainContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.secondary
+  },
+  ViewStyle: {
+    flexDirection: 'row',
+    alignItems: 'center'
 
-    },
-    TextStyle:{
-        padding:5,
-        margin:5,
-        fontSize:20,
-        color:'#000000',
-        backgroundColor:theme.colors.primary,
-        borderRadius:15
+  },
+  TextStyle: {
+    padding: 5,
+    margin: 5,
+    fontSize: 20,
+    color: '#ffffff',
+    backgroundColor: theme.colors.primary,
+    borderRadius: 15
 
-    },
-    TextInputStyle:{
-        padding:5,
-        borderWidth:1,
-        borderColor:'#000000',
-        margin:5,
-        fontSize:15
-    },
-    datePickerStyle: {
-        width: 200,
-        marginTop: 20,
-      },
+  },
+  TextInputStyle: {
+    padding: 10,
+    width:300,
+    fontSize: 15,
+    marginTop: 10,
+
+  },
+  btn: {
+    borderWidth: 1, justifyContent: 'center',
+    alignSelf: 'center',
+    fontSize: 20,
+    backgroundColor: theme.colors.primary,
+    color: '#ffffff',
+    padding: 10,
+    margin: 10
+
+  }
 })
 export default CreateTicket;

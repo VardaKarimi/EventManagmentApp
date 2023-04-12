@@ -67,6 +67,7 @@ const UserProfile = ({ navigation }) => {
                         <Button onPress={googleSignOut}>
                             <Text style={{ color: 'white' }}>SignOut</Text>
                         </Button>
+
                     </Card.Content>
                 </Card>
             </Card.Content>
