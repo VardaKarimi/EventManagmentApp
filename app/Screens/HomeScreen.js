@@ -71,6 +71,7 @@ const Home = ({navigation}) => {
       <Button title="Screen 2" onPress={() => navigation.navigate('CreateEvent')} />
       <Button title="Screen 3" onPress={() => navigation.navigate('Screen3')} />
       <Button title="Screen 4" onPress={() => navigation.navigate('Screen4')} />
+      <Button title="Screen 5" onPress={() => navigation.navigate('UpdateEvent')} />
     </View>
   );
 };

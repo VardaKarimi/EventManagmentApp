@@ -23,6 +23,13 @@ import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
   // console.log(this.props.eventId);
   this.props.onEventDelete();
  };
+
+ onEdit = () => {
+  this.props.onEventEdit();
+};
+
+
+
   render(){
   return (
     <View>
@@ -38,7 +45,7 @@ import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
           }
           onRequestClose={this.hideMenu}
         >
-          <MenuItem onPress={() => {Alert.alert('PopUp Menu Edit Clicked...' + this.props.eventId)}}>
+          <MenuItem onPress={this.onEdit}>
             Edit
           </MenuItem>
           <MenuItem disabled>Disabled Menu Item 2</MenuItem>

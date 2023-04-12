@@ -3,25 +3,24 @@ import {
   View,
   ScrollView,
   KeyboardAvoidingView,
-  alert,
   Alert,
   SafeAreaView,
   Text,
-  StyleSheet,
-  TouchableOpacity
 } from 'react-native';
-import Mybutton from '../../Components/Mybutton';
-import Button from '../../Components/Button';
 import Mytextinput from '../../Components/Mytextinput';
+import Mybutton from '../../Components/Mybutton';
 import {openDatabase} from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Iconic from 'react-native-vector-icons/Ionicons';
-import TextInput from '../../Components/TextInput';
-
+import Mytext from '../../Components/Mytext';
 
 var db = openDatabase({name: 'EventDatabase1.db'});
 
-const CreateEvent = ({navigation}) => {
+const UpdateEvent = ({navigation,route}) => {
+
+
+ 
+  let [inputEventId, setInputEventId] = useState(route.params.id);
   let [EventName, setEventName] = useState('');
   let [EventDate, setEventDate] = useState('');
   let [EventTime, setEventTime] = useState('');
@@ -30,6 +29,8 @@ const CreateEvent = ({navigation}) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+
+  console.log(inputEventId)
 
   const showDatePickerHandler = () => {
     setShowDatePicker(true);
@@ -64,70 +65,86 @@ const CreateEvent = ({navigation}) => {
       setEventTime(time);
     }
   };
-  
 
+  let updateAllStates = (name, date, time, address, description) => {
+    setEventName(name);
+    setEventDate(date);
+    setEventTime(time);
+    setEventAddress(address);
+    setEventDescription(description);
+  };
 
+  React.useEffect(() => {
+    console.log(inputEventId);
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM table_event_1 where event_id = ?',
+        [inputEventId],
+        (tx, results) => {
+          var len = results.rows.length;
+          if (len > 0) {
+            let res = results.rows.item(0);
+            updateAllStates(res.event_name, res.event_date, res.event_time, res.event_address, res.event_description);
+          } else {
+            Alert.alert('No user found');
+            updateAllStates('', '', '','','');
+          }
+        },
+      );
+    });
+  }, []);
 
-  // const handleTimeChange = (event, selectedTime) => {
-  //   const currentTime = selectedTime || EventTime;
-  //   setShowTimePicker(false);
-  //   setEventTime(currentTime.toLocaleTimeString());
-  // };
+  let updateEvent = () => {
+   
 
-  let register_event = () => {
-    console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
-    const c = {d1 : new Date(1672720648000)}
+    if (!inputEventId) {
+      Alert.alert('Please fill Event id');
+      return;
+    }
     if (!EventName) {
-      alert('Please fill name');
+      Alert.alert('Please fill name');
       return;
     }
     if (!EventDate) {
-      alert('Please fill date');
+      Alert.alert('Please fill date');
       return;
     }
     if (!EventTime) {
-      alert('Please fill time');
+      Alert.alert('Please fill time');
       return;
     }
-
     if (!EventAddress) {
-      alert('Please fill Address');
+      Alert.alert('Please fill Address');
       return;
     }
     if (!EventDescription) {
-      alert('Please fill Description');
+      Alert.alert('Please fill description');
       return;
     }
 
-
-    db.transaction(function (tx) {
-      //console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
-            tx.executeSql(
-        'INSERT INTO table_event_1 (event_name, event_date, event_time, event_address, event_description) VALUES (?,?,?,?,?)',
-        [EventName, EventDate,EventTime, EventAddress, EventDescription],
+    db.transaction((tx) => {
+      tx.executeSql(
+        'UPDATE table_event_1 set event_name=?, event_date=? , event_time=?, event_address=?, event_description=? where event_id=?',
+        [EventName, EventDate,EventTime, EventAddress, EventDescription, inputEventId],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
-              'Event Registered Successfully',
+              'Event updated successfully',
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
+                  onPress: () => navigation.navigate('showDetails',{eventId:inputEventId}),
                 },
               ],
               {cancelable: false},
             );
-          } else alert('Registration Failed');
+          } else Alert.alert('Updation Failed');
         },
       );
     });
   };
-
-
-
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -136,35 +153,30 @@ const CreateEvent = ({navigation}) => {
             <KeyboardAvoidingView
               behavior="padding"
               style={{flex: 1, justifyContent: 'space-between'}}>
+              <Mytext
+              value={inputEventId}/>
+              {/* <Mybutton title="Search Event" customClick={searchEvent} /> */}
               <Mytextinput
                 placeholder="Enter Name"
+                value={EventName}
+                style={{padding: 10}}
                 onChangeText={(EventName) => setEventName(EventName)}
-                style={{padding: 10}}
               />
-              {/* <Mytextinput
-                placeholder="Enter Date"
-                onChangeText={(EventDate) => setEventDate(EventDate)}
-                maxLength={10}
-                keyboardType="numeric"
-                style={{padding: 10}}
-              /> */}
-  
-              
-        <Mytextinput 
+               <Mytextinput 
 
-                  editable={false}
-                  placeholder="Select date"
-                  value={EventDate ? EventDate.toString() : ''}
-                  iconName = {'calendar-outline'}   handleIconPress={showDatePickerHandler}/> 
-                  {showDatePicker && (
-                 <DateTimePicker
-                   value={new Date()}
-                   display="default"
-                   onChange={handleDateChange}
-                   onCancel={hideDatePickerHandler}
-                  />
-             
-              )}
+                editable={false}
+                placeholder="Select date"
+                value={EventDate ? EventDate.toString() : ''}
+                iconName = {'calendar-outline'}   handleIconPress={showDatePickerHandler}/> 
+                {showDatePicker && (
+                <DateTimePicker
+                 value={  new Date()}
+                 display="default"
+                 onChange={handleDateChange}
+                 onCancel={hideDatePickerHandler}
+                 />
+
+                )}
 
               <Mytextinput
                 editable={false}
@@ -188,21 +200,17 @@ const CreateEvent = ({navigation}) => {
               )}
               <Mytextinput
                 placeholder="Enter Address"
+                value={EventAddress}
+                style={{padding: 10}}
                 onChangeText={(EventAddress) => setEventAddress(EventAddress)}
-                maxLength={225}
-                numberOfLines={5}
-                multiline={true}
-                style={{textAlignVertical: 'top', padding: 10}}
               />
               <Mytextinput
                 placeholder="Enter Description"
+                value={EventDescription}
+                style={{padding: 10}}
                 onChangeText={(EventDescription) => setEventDescription(EventDescription)}
-                maxLength={225}
-                numberOfLines={5}
-                multiline={true}
-                style={{textAlignVertical: 'top', padding: 10}}
               />
-              <Mybutton title="Submit" customClick={register_event} />
+              <Mybutton title="Update Event" customClick={updateEvent} />
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
@@ -210,14 +218,5 @@ const CreateEvent = ({navigation}) => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  datePickerStyle: {
-    width: 200,
-    marginTop: 20,
-  },
-});
 
-
-
-export default CreateEvent;
-
+export default UpdateEvent;

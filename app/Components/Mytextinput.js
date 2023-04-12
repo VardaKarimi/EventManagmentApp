@@ -3,19 +3,27 @@
 // Custom TextInput
 
 import React from 'react';
-import {View, TextInput} from 'react-native';
+import {View, TextInput,TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 const Mytextinput = (props) => {
   return (
     <View
       style={{
+        flexDirection:'row',
+        alignItems:"center",
         marginLeft: 35,
         marginRight: 35,
         marginTop: 10,
         borderColor: '#007FFF',
         borderWidth: 1,
       }}>
+       <TouchableOpacity style={{margin:10}} onPress={props.handleIconPress}>
+          <Icon name={props.iconName} size={24} color="gray" />
+        </TouchableOpacity>
       <TextInput
+      
         underlineColorAndroid="transparent"
         placeholder={props.placeholder}
         placeholderTextColor="#007FFF"
@@ -29,6 +37,7 @@ const Mytextinput = (props) => {
         blurOnSubmit={false}
         value={props.value}
       />
+       
     </View>
   );
 };
