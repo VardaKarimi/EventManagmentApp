@@ -14,6 +14,8 @@ import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
+import { theme } from '../core/style/theme';
+import CreateTicket from '../Screens/event_detail/Menu/Create_ticket';
 
 
   // import showDetails from '../Screens/showDetails';
@@ -59,6 +61,7 @@ import { Image } from 'react-native';
             backgroundColor:theme.colors.primary
           },}} />
         <Stack.Screen name='CreateTicket' component={CreateTicket} options={{title:'',headerStyle:{backgroundColor:theme.colors.primary}}}/>
+
       </Stack.Navigator> 
     </NavigationContainer>
   );

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {View, Text, Image, TouchableOpacity,Alert} from 'react-native';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {withNavigation} from 'react-navigation';
 import { theme } from '../../../core/style/theme';
 
 
