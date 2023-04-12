@@ -19,7 +19,7 @@ const SplashScreen = ({ navigation }) => {
         if (email == null) {
           navigation.navigate('LogIn');
         } else {
-          navigation.navigate('EventList');
+          navigation.navigate('Drawer');
         }
       });
     }, 2000);

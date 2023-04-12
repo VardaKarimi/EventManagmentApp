@@ -14,11 +14,14 @@ import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
 import { Image } from 'react-native';
+import { theme } from '../core/style/theme';
+import CreateTicket from '../Screens/event_detail/Menu/Create_ticket';
+import DrawerScreen from '../Screens/drawer_navigation/drawer_screen';
 
 
-  // import showDetails from '../Screens/showDetails';
-  const Navigation = ({ }) => {
-    const Stack = createNativeStackNavigator();
+// import showDetails from '../Screens/showDetails';
+const Navigation = ({ }) => {
+  const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer>
@@ -36,32 +39,44 @@ import { Image } from 'react-native';
           }}
         />
         <Stack.Screen
+          name="Drawer"
+          component={DrawerScreen}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: theme.colors.primary
+            },
+          }}
+        />
+        <Stack.Screen
           name="Home"
           component={HomeScreen}
         />
-        <Stack.Screen name="EventList" component={EventList} options={({ navigation }) => ({
+        <Stack.Screen name="Event List" component={EventList} options={({ navigation }) => ({
           headerBackVisible: false,
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('UserProfile')} >
-              <Image source={require("../assets/userbtn.png")} style={{ height: 30, width: 30,}} />
+            <TouchableOpacity onPress={() => navigation.navigate('My Profile')} >
+              <Image source={require("../assets/userbtn.png")} style={{ height: 30, width: 30, }} />
             </TouchableOpacity>
           ),
-          headerStyle:{
-            backgroundColor:theme.colors.primary
+          headerStyle: {
+            backgroundColor: theme.colors.primary
           },
-          title:''
+          title: ''
         })} />
         <Stack.Screen name="CreateEvent" component={CreateEvent} />
         <Stack.Screen name="Screen3" component={Screen3} />
         <Stack.Screen name="Screen4" component={Screen4} />
-        <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen name="showDetails" component={ShowDetails} options={{title:'',headerStyle:{
-            backgroundColor:theme.colors.primary
-          },}} />
-        <Stack.Screen name='CreateTicket' component={CreateTicket} options={{title:'',headerStyle:{backgroundColor:theme.colors.primary}}}/>
-      </Stack.Navigator> 
+        <Stack.Screen name="My Profile" component={UserProfile} />
+        <Stack.Screen name="showDetails" component={ShowDetails} options={{
+          title: '', headerStyle: {
+            backgroundColor: theme.colors.primary
+          },
+        }} />
+        <Stack.Screen name='CreateTicket' component={CreateTicket} options={{ title: '', headerStyle: { backgroundColor: theme.colors.primary } }} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-  export default Navigation;
+export default Navigation;

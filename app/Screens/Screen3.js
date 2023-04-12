@@ -12,7 +12,7 @@ const Screen3 = () => {
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM table_event_2', [], (tx, results) => {
+      tx.executeSql('SELECT * FROM table_event ORDER BY event_id DESC', [], (tx, results) => {
         var temp = [];
         for (let i = 0; i < results.rows.length; ++i)
           temp.push(results.rows.item(i));
