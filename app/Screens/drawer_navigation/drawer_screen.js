@@ -22,7 +22,7 @@ function CustomDrawerContent(props) {
             <Text style={{ fontWeight: 'bold', fontSize: 30, padding: 10, marginTop: 10, marginBottom: 20, marginLeft: 10 }}>Eventify</Text>
             <DrawerItem
                 label="Event List"
-                icon={() => <Ionicons name="calendar-outline" size={30} />}
+                icon={() => <Image source={require('../../assets/eventlist.png')} style={{ width: 30, height: 30 }} />}
                 onPress={() => navigation.navigate('EventList')}
                 activeTintColor={theme.colors.primary}
                 focused={state.routeNames[state.index] === 'EventList'}
