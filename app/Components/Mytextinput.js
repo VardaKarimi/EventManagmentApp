@@ -26,6 +26,7 @@ const Mytextinput = (props) => {
         <Ionicons name={props.iconName} size={24} color="gray" />
       </TouchableOpacity>
       <TextInput
+      
         underlineColorAndroid="transparent"
         placeholder={props.placeholder}
         placeholderTextColor="#000000"
@@ -39,6 +40,7 @@ const Mytextinput = (props) => {
         blurOnSubmit={false}
         value={props.value}
       />
+       
     </View>
   );
 };
