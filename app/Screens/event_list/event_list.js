@@ -5,13 +5,14 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { View, Text, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
 import { TextInput, BackHandler, Alert } from 'react-native';
 import styles from './event_list_styles';
 import { theme } from '../../core/style/theme';
 import FloatingButton from '../../Components/FloatingButton';
+
 
 
 const EventList = ({ route, navigation }) => {
@@ -48,7 +49,7 @@ const EventList = ({ route, navigation }) => {
     );
     return () => backHandler.remove();
   }, []);
-  
+
 
 
   React.useEffect(() => {
@@ -60,7 +61,7 @@ const EventList = ({ route, navigation }) => {
   }, [route.params]);
 
   const onPressShowDetails = (eventId) => {
-    navigation.navigate('showDetails', eventId );
+    navigation.navigate('showDetails', eventId);
 
   }
 
@@ -104,8 +105,17 @@ const EventList = ({ route, navigation }) => {
         </Card.Content>
         <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: 'D8D8D8' }} source={{ uri: item.imageUrl }} />
         <Card.Content>
-          <Paragraph style={styles.DescriptionStyle}>{item.Description}</Paragraph>
-        </Card.Content>
+              <Text style={styles.DescriptionStyle}>
+                <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
+                {"  " + item.Date}
+              </Text>
+            </Card.Content>
+            <Card.Content>
+              <Text style={styles.DescriptionStyle}>
+                <Image source={require('../../assets/location.png')} style={{ width: 20, height: 20 }} />
+                {"  " + item.Location}
+              </Text>
+            </Card.Content>
         <Card.Actions>
           <Button onPress={() => onPressShowDetails(item.id)}>Show Details</Button>
         </Card.Actions>
@@ -143,7 +153,16 @@ const EventList = ({ route, navigation }) => {
             </Card.Content>
             <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: 'D8D8D8' }} source={{ uri: event.imageUrl }} />
             <Card.Content>
-              <Paragraph style={styles.DescriptionStyle}>{event.Description}</Paragraph>
+              <Text style={styles.DescriptionStyle}>
+                <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
+                {"  " + event.Date}
+              </Text>
+            </Card.Content>
+            <Card.Content>
+              <Text style={styles.DescriptionStyle}>
+                <Image source={require('../../assets/location.png')} style={{ width: 20, height: 20 }} />
+                {"  " + event.Location}
+              </Text>
             </Card.Content>
             <Card.Actions>
               <Button onPress={() => onPressShowDetails(event.id)} style={{ borderColor: theme.colors.primary }}><Text style={{ color: theme.colors.primary }}>Show Details</Text></Button>
@@ -152,7 +171,7 @@ const EventList = ({ route, navigation }) => {
         ))
         }
 
-       
+
       </ScrollView>
       <FloatingButton navigation={navigation} />
     </View>

@@ -3,15 +3,17 @@ import { useState } from "react";
 
 const Eventdata = [{
     "id": "1",
+    "user_id":"106787316188762360627",
     "Title": "Holi Celebration",
     "Date": "8 March",
     "Time": "7 pm",
-    "Location": "SBR",
+    "Location": "SBR,Ahmedabad",
     "imageUrl": 'https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_800/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1675949370%2Fasxf0w82bnt88nyeivmh.jpg',
     "Description": "We are coming up with MKSHFT, Punjabi dholis and best of the DJ`s from Gujrat . The artist lineup will bring you the most joyful Holi celebration."
 },
 {
     "id": "2",
+    "user_id":"1",
     "Title": "Sunburn Arena Ft. Martin Garrix",
     "Date": "12 March",
     "Time": "4 pm",
@@ -21,6 +23,7 @@ const Eventdata = [{
 },
 {
     "id": "3",
+    "user_id": "1",
     "Title": "Jati Rehje - Gujarati Stand-up Comedy",
     "Date": "18 March",
     "Time": "9 pm",
@@ -30,6 +33,7 @@ const Eventdata = [{
 },
 {
     "id": "4",
+    "user_id":"2",
     "Title": "SILENT DISCO VIBES BY DJ NIHAR",
     "Date": "11 March",
     "Time": "8 pm",

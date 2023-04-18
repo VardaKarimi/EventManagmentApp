@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { StyleSheet } from 'react-native';
-import { TextInput } from "react-native";
 import { TouchableOpacity } from "react-native";
-import { Image } from 'react-native'
 import { theme } from "../../../core/style/theme";
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';

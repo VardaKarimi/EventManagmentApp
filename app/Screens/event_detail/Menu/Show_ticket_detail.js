@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View, SafeAreaView, Image, StyleSheet } from 'react-native';
+import { FlatList, Text, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 import { theme } from '../../../core/style/theme';
+import Eventdata from '../../../core/constants/EventString';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
-const ShowTicketDetail = (props) => {
+const ShowTicketDetail = (props, { navigation }) => {
   let [TicketData, setTicketData] = useState([]);
+  const [showDelete, setShowDelete] = useState(false)
   const eventId = props.eventId
+  const event = Eventdata.find(event => event.id === eventId);
+
+
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -18,7 +24,43 @@ const ShowTicketDetail = (props) => {
         setTicketData(temp);
       });
     });
+
+
   }, []);
+
+
+
+  useEffect(() => {
+    const getUserData = async () => {
+      let user = await AsyncStorage.getItem('userId');
+      let userID = JSON.parse(user)
+      if (userID == event.user_id) {
+        setShowDelete(true)
+      }
+
+    };
+
+    getUserData();
+  }, []);
+
+  function DeleteTicket(id) {
+    db.transaction((tx) => {
+      tx.executeSql('DELETE FROM table_ticket where ticket_id=?', [id], (tx, results) => {
+        var temp = [];
+        for (let i = 0; i < results.rows.length; ++i)
+          temp.push(results.rows.item(i));
+        setTicketData(temp);
+        console.log(TicketData, "<<<<<after Delete>>>>>")
+      });
+    });
+   () => navigation.navigate('showDetails',eventId)
+
+    console.log(id)
+    console.log("working")
+
+
+
+  }
 
   let listViewItemSeparator = () => {
     return (
@@ -37,6 +79,27 @@ const ShowTicketDetail = (props) => {
           <Text style={styles.title}>Ticket Price: </Text>
           <Text style={styles.text}>{item.ticket_price}</Text>
         </View>
+
+        {showDelete
+          ? <View style={{ alignSelf: 'flex-end' }}>
+            <TouchableOpacity onPress={() => { DeleteTicket(item.ticket_id) }} style={{
+              backgroundColor: theme.colors.primary,
+              width: "40%",
+              padding: 10,
+              margin: 5,
+              borderWidth: 1, justifyContent: 'center',
+            }} ><Text style={{ color: '#ffffff', fontSize: 15 }}>Delete</Text></TouchableOpacity>
+          </View>
+          : <View style={{ alignSelf: 'flex-end' }}>
+            <TouchableOpacity style={{
+              backgroundColor: theme.colors.primary,
+              width: "40%",
+              padding: 10,
+              margin: 5,
+              borderWidth: 1, justifyContent: 'center',
+            }}><Text style={{ color: '#ffffff', fontSize: 15 }}>Buy</Text></TouchableOpacity>
+          </View>
+        }
       </View>
     );
   };
@@ -59,7 +122,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.secondary,
-    marginTop:20
+    marginTop: 20
   },
   innerContainer: {
     flex: 1,
@@ -72,7 +135,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     padding: 10,
-    backgroundColor: theme.colors.secondary,
+    backgroundColor: "#ffffff",
     borderRadius: 5,
     shadowColor: '#000000',
     shadowOffset: {
