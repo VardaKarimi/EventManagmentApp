@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { StyleSheet } from 'react-native';
+import Background from '../../Components/Background';
+import { theme } from '../../core/style/theme';
 
 const styles = StyleSheet.create({
   ItemView: {
@@ -9,8 +11,11 @@ const styles = StyleSheet.create({
   searchBar: {
     borderColor: "#00235B",
     borderWidth: 1,
-    marginBottom: 10,
-    fontSize: 15
+    margin: 10,
+    fontSize: 15,
+    padding: 10,
+    backgroundColor: theme.colors.secondary,
+    borderRadius: 10
 
   },
   fabStyle: {

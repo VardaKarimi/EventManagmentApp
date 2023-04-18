@@ -7,7 +7,8 @@ const event_detail_styles = StyleSheet.create({
       fontStyle:'normal',
       fontWeight:'bold',
       color:"#000000",
-      marginBottom:15
+      marginBottom:15,
+      flex:0.8,
     },
     ImageStyle:{
       borderRadius:20,

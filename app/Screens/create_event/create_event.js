@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -8,9 +8,14 @@ import {
   SafeAreaView,
   Text,
   StyleSheet,
+  BackHandler,
+  Image,
   TouchableOpacity
 } from 'react-native';
 import Mybutton from '../../Components/Mybutton';
+import FilePicker, { types } from 'react-native-document-picker';
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import Button from '../../Components/Button';
 import Mytextinput from '../../Components/Mytextinput';
 import {openDatabase} from 'react-native-sqlite-storage';
@@ -20,6 +25,7 @@ import TextInput from '../../Components/TextInput';
 
 
 var db = openDatabase({name: 'EventDatabase1.db'});
+console.log("database opened"+db)
 
 const CreateEvent = ({navigation}) => {
   let [EventName, setEventName] = useState('');
@@ -29,8 +35,50 @@ const CreateEvent = ({navigation}) => {
   let [EventDescription, setEventDescription] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  let [EventImagePath, setEventImagePath] = useState('');
+  let [UserId, setUserId] = useState('');
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.goBack();
+      return true;
+    });
+
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
 
+  useEffect(() => {
+    const getUserId = async () => {
+      let userid = await AsyncStorage.getItem('userId');
+      console.log(userid);
+      let parsed = JSON.parse(userid);
+      setUserId(parsed);
+    };
+
+    getUserId();
+  }, []);
+
+  const handleFilePicker = async () => {
+    try {
+      const response = await FilePicker.pick({
+        presentationStyle: 'fullScreen',
+        allowMultiSelection: true,
+        type: [types.images],
+      });
+
+      console.log(response.map(file => file.uri));
+      if (response.length > 0) {
+        setEventImagePath(response[0].uri);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  console.log("database opened"+db)
   const showDatePickerHandler = () => {
     setShowDatePicker(true);
   };
@@ -58,10 +106,11 @@ const CreateEvent = ({navigation}) => {
   };
 
   const handleTimeChange = (event, selectedTime) => {
-    hideTimePickerHandler();
-    if (selectedTime !== undefined) {
-      const time = selectedTime.toISOString().substr(11, 8);
-      setEventTime(time);
+    if (event.type === 'set') {
+      const time = new Date(selectedTime.getTime());
+      time.setSeconds(0);
+      setEventTime(time.getTime());
+      hideTimePickerHandler();
     }
   };
   
@@ -75,8 +124,8 @@ const CreateEvent = ({navigation}) => {
   // };
 
   let register_event = () => {
-    console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
-    const c = {d1 : new Date(1672720648000)}
+    console.log(EventName, EventDate, EventTime,EventAddress, EventDescription, EventImagePath, UserId);
+    // const c = {d1 : new Date(1672720648000)}
     if (!EventName) {
       alert('Please fill name');
       return;
@@ -99,31 +148,55 @@ const CreateEvent = ({navigation}) => {
       return;
     }
 
-
     db.transaction(function (tx) {
-      //console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
-            tx.executeSql(
-        'INSERT INTO table_event_1 (event_name, event_date, event_time, event_address, event_description) VALUES (?,?,?,?,?)',
-        [EventName, EventDate,EventTime, EventAddress, EventDescription],
+      tx.executeSql(
+        'INSERT INTO table_event (user_id,event_name, event_date, event_time, event_address, event_description, event_image) VALUES (?,?,?,?,?,?,?)',
+        [UserId,EventName, EventDate,EventTime, EventAddress, EventDescription, EventImagePath],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
-              'Event Registered Successfully',
+              'You are Registered Successfully',
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
+                  onPress: () => navigation.navigate('EventList'),
                 },
               ],
-              {cancelable: false},
+              { cancelable: false }
             );
           } else alert('Registration Failed');
-        },
+        }
       );
     });
   };
+
+
+  //   db.transaction(function (tx) {
+  //     console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
+  //           tx.executeSql(
+  //       'INSERT INTO event (event_name, event_date, event_time, event_address, event_description) VALUES (?,?,?,?,?)',
+  //       [EventName, EventDate,EventTime, EventAddress, EventDescription],
+  //       (tx, results) => {
+  //         console.log('Results', results.rowsAffected);
+  //         if (results.rowsAffected > 0) {
+  //           Alert.alert(
+  //             'Success',
+  //             'Event Registered Successfully',
+  //             [
+  //               {
+  //                 text: 'Ok',
+  //                 onPress: () => navigation.navigate('Home'),
+  //               },
+  //             ],
+  //             {cancelable: false},
+  //           );
+  //         } else alert('Registration Failed');
+  //       },
+  //     );
+  //   });
+  // };
 
 
 
@@ -150,26 +223,28 @@ const CreateEvent = ({navigation}) => {
               /> */}
   
               
-        <Mytextinput 
+  <Mytextinput 
+  editable={false}
+  placeholder="Select date"
+  value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''}
+  iconName={'calendar-outline'}
+  handleIconPress={showDatePickerHandler}
+/> 
 
-                  editable={false}
-                  placeholder="Select date"
-                  value={EventDate ? EventDate.toString() : ''}
-                  iconName = {'calendar-outline'}   handleIconPress={showDatePickerHandler}/> 
-                  {showDatePicker && (
-                 <DateTimePicker
-                   value={new Date()}
-                   display="default"
-                   onChange={handleDateChange}
-                   onCancel={hideDatePickerHandler}
-                  />
-             
-              )}
+{showDatePicker && (
+  <DateTimePicker
+    value={new Date()}
+    display="default"
+    onChange={handleDateChange}
+    onCancel={hideDatePickerHandler}
+  />
+)}
+
 
               <Mytextinput
                 editable={false}
                 placeholder="Enter Time"
-                value={EventTime}
+                value={EventTime ? new Date(EventTime).toLocaleTimeString() : ''}
                 onChangeText={(EventTime) => setEventTime(EventTime)}
                 maxLength={10}
                 keyboardType="numeric"
@@ -202,6 +277,17 @@ const CreateEvent = ({navigation}) => {
                 multiline={true}
                 style={{textAlignVertical: 'top', padding: 10}}
               />
+              {EventImagePath !== '' && <Image source={{ uri: EventImagePath }} style={{ width: 200, alignSelf: 'center', height: 200, marginTop: 20 }}></Image>}
+              <Button style={styles.btn} onPress={() => {
+                if (EventImagePath !== '') {
+                  setEventImagePath('');
+                } else {
+                  handleFilePicker();
+                }
+              }}><Text style={{ color: 'white' }}>
+                  {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
+                </Text>
+              </Button>
               <Mybutton title="Submit" customClick={register_event} />
             </KeyboardAvoidingView>
           </ScrollView>

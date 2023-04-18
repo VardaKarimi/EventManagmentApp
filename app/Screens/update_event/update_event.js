@@ -17,15 +17,15 @@ import Mytext from '../../Components/Mytext';
 var db = openDatabase({name: 'EventDatabase1.db'});
 
 const UpdateEvent = ({navigation,route}) => {
-
+  const { event } = route.params;
 
  
-  let [inputEventId, setInputEventId] = useState(route.params.id);
-  let [EventName, setEventName] = useState('');
-  let [EventDate, setEventDate] = useState('');
-  let [EventTime, setEventTime] = useState('');
-  let [EventAddress, setEventAddress] = useState('');
-  let [EventDescription, setEventDescription] = useState('');
+  let [inputEventId, setInputEventId] = useState(event.event_id);
+  let [EventName, setEventName] = useState(event.event_name);
+  let [EventDate, setEventDate] = useState(event.event_date);
+  let [EventTime, setEventTime] = useState(event.event_time);
+  let [EventAddress, setEventAddress] = useState(event.event_address);
+  let [EventDescription, setEventDescription] = useState(event.event_description);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
@@ -124,7 +124,7 @@ const UpdateEvent = ({navigation,route}) => {
 
     db.transaction((tx) => {
       tx.executeSql(
-        'UPDATE table_event_1 set event_name=?, event_date=? , event_time=?, event_address=?, event_description=? where event_id=?',
+        'UPDATE table_event set event_name=?, event_date=? , event_time=?, event_address=?, event_description=? where event_id=?',
         [EventName, EventDate,EventTime, EventAddress, EventDescription, inputEventId],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
@@ -166,7 +166,7 @@ const UpdateEvent = ({navigation,route}) => {
 
                 editable={false}
                 placeholder="Select date"
-                value={EventDate ? EventDate.toString() : ''}
+                value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''}
                 iconName = {'calendar-outline'}   handleIconPress={showDatePickerHandler}/> 
                 {showDatePicker && (
                 <DateTimePicker

@@ -31,7 +31,7 @@ const EventList = ({route, navigation }) => {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       db.transaction((tx) => {
-        tx.executeSql('SELECT * FROM table_event_1', [], (tx, results) => {
+        tx.executeSql('SELECT * FROM table_event', [], (tx, results) => {
           var temp = [];
           for (let i = 0; i < results.rows.length; ++i)
             temp.push(results.rows.item(i));
@@ -100,7 +100,7 @@ const EventList = ({route, navigation }) => {
         <Card.Content>
           <Title>{item.event_name}</Title>
         </Card.Content>
-        {/* <Card.Cover source={{ uri: item.imageUrl }} /> */}
+        <Card.Cover source={{ uri: item.event_image }} />
         <Card.Content>
           <Paragraph>{item.event_description}</Paragraph>
         </Card.Content>
@@ -135,7 +135,7 @@ const EventList = ({route, navigation }) => {
     <Card.Content>
       <Title style={styles.TitleStyle}>{event.event_name}</Title>
     </Card.Content>
-    {/* <Card.Cover style={{ flex:1, padding:10, backgroundColor:"D8D8D8"}}source={{ uri: event.imageUrl }} /> */}
+    <Card.Cover style={{ flex:1, padding:10, backgroundColor:"D8D8D8"}}source={{ uri: event.event_image }} />
     <Card.Content>
       <Paragraph style={styles.DescriptionStyle}>{event.event_description}</Paragraph>
     </Card.Content>
