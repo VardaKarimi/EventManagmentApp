@@ -10,7 +10,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
+  btn: {
+    backgroundColor: theme.colors.primary,
+    width: "60%",
+    padding: 5,
+    margin: 5,
+    borderRadius: 10,
+    alignSelf: 'center',
+    // borderWidth: 3,
+    justifyContent: 'center',
+  },
   logo: {
     fontWeight: 'bold',
     fontSize: 40,
