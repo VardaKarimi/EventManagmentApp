@@ -6,6 +6,7 @@ import { theme } from "../../../core/style/theme";
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Mytextinput from "../../../Components/Mytextinput";
+import moment from "moment";
 
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
@@ -17,13 +18,14 @@ function CreateTicket({ navigation, route }) {
   const [ticketPrice, setTicketPrice] = useState()
   const [date, setDate] = useState('')
   const [shouldShow, setShouldShow] = useState(false)
-  const eventId = route.params;
+  const { ID, DATA } = route.params;
 
   const handleDateChange = (event, selectedDate) => {
 
     const currentDate = selectedDate || EventDate;
     setShouldShow(false);
-    setDate(currentDate.toISOString());
+    current = moment(currentDate).format('DD MMM YYYY')
+    setDate(current);
 
   };
   const handleShow = ()=>{
@@ -46,14 +48,14 @@ function CreateTicket({ navigation, route }) {
 
 
     db.transaction(function (tx) {
-      console.log(ticketType, ticketPrice, date, eventId)
+      console.log(ticketType, ticketPrice, date, ID)
       tx.executeSql(
         'INSERT INTO table_ticket (event_id, ticket_type, ticket_price,ticket_valid_date ) VALUES (?,?,?,?)',
-        [eventId, ticketType, ticketPrice, date],
+        [ID, ticketType, ticketPrice, date],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
-            navigation.navigate('showDetails', eventId)
+            navigation.navigate('showDetails',{ID:ID,DATA:DATA})
 
           } else Alert.alert('Generation Failed');
         },

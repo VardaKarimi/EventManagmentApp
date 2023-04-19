@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 import { theme } from '../../../core/style/theme';
-import Eventdata from '../../../core/constants/EventString';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
@@ -10,14 +9,15 @@ var db = openDatabase({ name: 'EventDatabase1.db' });
 const ShowTicketDetail = (props, { navigation }) => {
   let [TicketData, setTicketData] = useState([]);
   const [showDelete, setShowDelete] = useState(false)
-  const eventId = props.eventId
-  const event = Eventdata.find(event => event.id === eventId);
+  const ID = props.ID
+  const DATA = props.DATA
+  const event = DATA.find(event => event.event_id === ID);
 
 
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM table_ticket where event_id=?', [eventId], (tx, results) => {
+      tx.executeSql('SELECT * FROM table_ticket where event_id=?', [ID], (tx, results) => {
         var temp = [];
         for (let i = 0; i < results.rows.length; ++i)
           temp.push(results.rows.item(i));
@@ -34,7 +34,10 @@ const ShowTicketDetail = (props, { navigation }) => {
     const getUserData = async () => {
       let user = await AsyncStorage.getItem('userId');
       let userID = JSON.parse(user)
-      if (userID == event.user_id) {
+      console.log(ID,'<<<event id>>')
+      console.log(event.user_id,'<<user id>>')
+      
+      if (userID === event.user_id) {
         setShowDelete(true)
       }
 
@@ -53,9 +56,9 @@ const ShowTicketDetail = (props, { navigation }) => {
         console.log(TicketData, "<<<<<after Delete>>>>>")
       });
     });
-   () => navigation.navigate('showDetails',eventId)
+    () => navigation.navigate('showDetails', {ID:ID,DATA:DATA})
 
-    console.log(id)
+    console.log(ID)
     console.log("working")
 
 

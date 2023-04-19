@@ -27,6 +27,9 @@ import { theme } from '../../../core/style/theme';
   // console.log(this.props.eventId);
   this.props.onEventDelete();
  };
+ onEdit = () => {
+  this.props.onEventEdit();
+};
 
  onCreateTicket = () =>{
   this.props.navigateToCreateTicket();
@@ -48,7 +51,7 @@ import { theme } from '../../../core/style/theme';
           onRequestClose={this.hideMenu}
         >
           <View style={{backgroundColor:theme.colors.primary}}>
-          <MenuItem onPress={() => {Alert.alert('PopUp Menu Edit Clicked...' + this.props.eventId)}} >
+          <MenuItem onPress={this.onEdit} >
             <Text style={{color:'#ffffff',fontSize:20}}>Edit Event</Text>
           </MenuItem>
 

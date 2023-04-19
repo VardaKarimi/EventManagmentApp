@@ -1,8 +1,4 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react/self-closing-comp */
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -10,19 +6,26 @@ import {
   alert,
   Alert,
   SafeAreaView,
+  Button,
   Text,
   StyleSheet,
+  BackHandler,
   Image,
-  BackHandler
+  TouchableOpacity
 } from 'react-native';
 import Mybutton from '../../Components/Mybutton';
+import FilePicker, { types } from 'react-native-document-picker';
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
+// import Button from '../../Components/Button';
 import Mytextinput from '../../Components/Mytextinput';
 import { openDatabase } from 'react-native-sqlite-storage';
-import Button from '../../Components/Button';
-import FilePicker, { types } from 'react-native-document-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker'
+
+
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
+console.log("database opened" + db)
 
 const CreateEvent = ({ navigation }) => {
   let [EventName, setEventName] = useState('');
@@ -30,6 +33,8 @@ const CreateEvent = ({ navigation }) => {
   let [EventTime, setEventTime] = useState('');
   let [EventAddress, setEventAddress] = useState('');
   let [EventDescription, setEventDescription] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   let [EventImagePath, setEventImagePath] = useState('');
   let [UserId, setUserId] = useState('');
 
@@ -56,8 +61,6 @@ const CreateEvent = ({ navigation }) => {
     getUserId();
   }, []);
 
-
-
   const handleFilePicker = async () => {
     try {
       const response = await FilePicker.pick({
@@ -75,12 +78,54 @@ const CreateEvent = ({ navigation }) => {
     }
   };
 
+  console.log("database opened" + db)
+  const showDatePickerHandler = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+
+    const currentDate = selectedDate || EventDate;
+    setShowDatePicker(false);
+    setEventDate(currentDate.toISOString());
+
+  };
+
+
+  const hideDatePickerHandler = () => {
+    setEventDate(null);
+  }
+
+
+  const showTimePickerHandler = () => {
+    setShowTimePicker(true);
+  };
+
+  const hideTimePickerHandler = () => {
+    setShowTimePicker(false);
+  };
+
+  const handleTimeChange = (event, selectedTime) => {
+    if (event.type === 'set') {
+      const time = new Date(selectedTime.getTime());
+      time.setSeconds(0);
+      setEventTime(time.getTime());
+      hideTimePickerHandler();
+    }
+  };
+
+
+
+
+  // const handleTimeChange = (event, selectedTime) => {
+  //   const currentTime = selectedTime || EventTime;
+  //   setShowTimePicker(false);
+  //   setEventTime(currentTime.toLocaleTimeString());
+  // };
 
   let register_event = () => {
-
-
     console.log(EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath, UserId);
-
+    // const c = {d1 : new Date(1672720648000)}
     if (!EventName) {
       alert('Please fill name');
       return;
@@ -103,31 +148,34 @@ const CreateEvent = ({ navigation }) => {
       return;
     }
 
-
     db.transaction(function (tx) {
-      //console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
       tx.executeSql(
-        'INSERT INTO table_event(user_id, event_name, event_date, event_time, event_address, event_description, event_image ) VALUES (?,?,?,?,?,?,?)',
+        'INSERT INTO table_event (user_id,event_name, event_date, event_time, event_address, event_description, event_image) VALUES (?,?,?,?,?,?,?)',
         [UserId, EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
-              'Event Registered Successfully',
+              'You are Registered Successfully',
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Screen3'),
+                  onPress: () => navigation.navigate('EventList'),
                 },
               ],
-              { cancelable: false },
+              { cancelable: false }
             );
-          } else { alert('Registration Failed'); }
-        },
+          } else alert('Registration Failed');
+        }
       );
     });
   };
+
+
+
+
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -142,20 +190,46 @@ const CreateEvent = ({ navigation }) => {
                 onChangeText={(EventName) => setEventName(EventName)}
                 style={{ padding: 10 }}
               />
+
+
               <Mytextinput
-                placeholder="Enter Date"
-                onChangeText={(EventDate) => setEventDate(EventDate)}
-                maxLength={10}
-                keyboardType="numeric"
-                style={{ padding: 10 }}
+                editable={false}
+                placeholder="Select date"
+                value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
+                iconName={'calendar-outline'}
+                handleIconPress={showDatePickerHandler}
               />
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={new Date()}
+                  display="default"
+                  onChange={handleDateChange}
+                  onCancel={hideDatePickerHandler}
+                />
+              )}
+
+
               <Mytextinput
+                editable={false}
                 placeholder="Enter Time"
+                value={EventTime ? new Date(EventTime).toLocaleTimeString() : ''}
                 onChangeText={(EventTime) => setEventTime(EventTime)}
                 maxLength={10}
                 keyboardType="numeric"
-                style={{ padding: 10 }}
+
+                iconName={'time-outline'} handleIconPress={showTimePickerHandler}
               />
+              {showTimePicker && (
+                <DateTimePicker
+                  value={new Date()}
+                  mode="time"
+                  display="default"
+                  onChange={handleTimeChange}
+                  onCancel={hideTimePickerHandler}
+                />
+
+              )}
               <Mytextinput
                 placeholder="Enter Address"
                 onChangeText={(EventAddress) => setEventAddress(EventAddress)}
@@ -172,16 +246,17 @@ const CreateEvent = ({ navigation }) => {
                 multiline={true}
                 style={{ textAlignVertical: 'top', padding: 10 }}
               />
-
               {EventImagePath !== '' && <Image source={{ uri: EventImagePath }} style={{ width: 200, alignSelf: 'center', height: 200, marginTop: 20 }}></Image>}
-              <Button style={styles.btn} onPress={() => {
+              <Button style={styles.btn} title='Add Image' onPress={() => {
                 if (EventImagePath !== '') {
                   setEventImagePath('');
                 } else {
                   handleFilePicker();
                 }
               }}>
-                {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
+                {/* <Text style={{ color: 'white' }}>
+                  {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
+                </Text> */}
               </Button>
               <Mybutton title="Submit" customClick={register_event} />
             </KeyboardAvoidingView>
@@ -191,17 +266,14 @@ const CreateEvent = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  datePickerStyle: {
+    width: 200,
+    marginTop: 20,
+  },
+});
 
 
 
 export default CreateEvent;
-const styles = StyleSheet.create({
-  btn: {
-    marginTop: 30,
-    justifyContent: 'center',
-    alignSelf: 'center',
-    alignItems: 'center',
-    width: 260,
-  }
-})
+
