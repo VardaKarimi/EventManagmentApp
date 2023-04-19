@@ -180,10 +180,11 @@ const CreateEvent = ({ navigation }) => {
                 } else {
                   handleFilePicker();
                 }
-              }}>
-                {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
+              }}><Text style={{ color: 'white' }}>
+                  {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
+                </Text>
               </Button>
-              <Mybutton title="Submit" customClick={register_event} />
+              <Button style={{ width: 270, alignSelf: 'center' }} customClick={register_event} ><Text style={{ color: 'white' }}>Submit</Text></Button>
             </KeyboardAvoidingView>
           </ScrollView>
         </View>

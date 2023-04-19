@@ -1,7 +1,7 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable prettier/prettier */
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
@@ -47,8 +47,8 @@ const EventList = ({ route, navigation }) => {
       },
     );
     return () => backHandler.remove();
-  }, []);
-  
+  }, [navigation]);
+
 
 
   React.useEffect(() => {
@@ -60,7 +60,7 @@ const EventList = ({ route, navigation }) => {
   }, [route.params]);
 
   const onPressShowDetails = (eventId) => {
-    navigation.navigate('showDetails', eventId );
+    navigation.navigate('showDetails', eventId);
 
   }
 
@@ -102,7 +102,7 @@ const EventList = ({ route, navigation }) => {
         <Card.Content>
           <Title style={styles.TitleStyle}>{item.Title}</Title>
         </Card.Content>
-        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: 'D8D8D8' }} source={{ uri: item.imageUrl }} />
+        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: item.imageUrl }} />
         <Card.Content>
           <Paragraph style={styles.DescriptionStyle}>{item.Description}</Paragraph>
         </Card.Content>
@@ -127,13 +127,15 @@ const EventList = ({ route, navigation }) => {
           <TextInput onChangeText={(text) => searchFilterFunction(text)}
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
           {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
-          <FlatList
-            data={filteredData}
-            keyExtractor={(item, id) => id.toString()}
-            ItemSeparatorComponent={''}
-            renderItem={ItemView}
+          <View>
+            <FlatList
+              data={filteredData}
+              keyExtractor={(item, id) => id.toString()}
+              ItemSeparatorComponent={''}
+              renderItem={ItemView}
 
-          />
+            />
+          </View>
         </View>
 
         {shouldShow && eventData.map(event => (
@@ -152,7 +154,7 @@ const EventList = ({ route, navigation }) => {
         ))
         }
 
-       
+
       </ScrollView>
       <FloatingButton navigation={navigation} />
     </View>

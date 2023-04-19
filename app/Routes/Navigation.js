@@ -1,5 +1,6 @@
-/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
+/* eslint-disable react/no-unstable-nested-components */
+import 'react-native-gesture-handler';
 import { Alert, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -36,6 +37,13 @@ const Navigation = ({ }) => {
           component={LogInScreen}
           options={{
             headerBackVisible: false,
+            headerStyle: {
+              backgroundColor: theme.colors.primary,
+              color: 'white',
+            },
+            headerTitleStyle: {
+              color: 'white'
+            }
           }}
         />
         <Stack.Screen

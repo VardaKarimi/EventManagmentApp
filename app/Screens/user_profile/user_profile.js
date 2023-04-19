@@ -1,17 +1,28 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, Image, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, Image, BackHandler, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
 import { theme } from '../../core/style/theme';
 import Button from '../../Components/Button';
 import styles from './user_profile_style';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useIsFocused } from '@react-navigation/native';
 
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { openDatabase } from 'react-native-sqlite-storage';
+
+var db = openDatabase({ name: 'EventDatabase1.db' });
 
 const UserProfile = ({ navigation }) => {
-    const [userData, setUserData] = useState(null);
+    const isFocused = useIsFocused();
+    let [userData, setUserData] = useState(null);
+    let [id, setId] = useState('');
+    let [isDialogVisible, setIsDialogVisible] = useState(false);
+    let [contactNumber, setContactNumber] = useState();
+    let [contact, setContact] = useState();
+    let [isContactSaved, setIsContactSaved] = useState(false);
+
 
     const googleSignOut = async () => {
         try {
@@ -22,20 +33,73 @@ const UserProfile = ({ navigation }) => {
         } catch (error) {
             console.log(error);
         }
-        navigation.navigate('LogIn');
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'LogIn' }],
+        });
         console.log(userData);
     };
 
     useEffect(() => {
+        if (isFocused) {
+            prevKey => prevKey + 1; // Increment the key to force a re-render of the ShowTicketDetail component
+        }
+
+    }, [isFocused]);
+
+    useEffect(() => {
         const getUserData = async () => {
             let user = await AsyncStorage.getItem('user');
-            console.log(user);
             let parsed = JSON.parse(user);
+            console.log(parsed);
             setUserData(parsed);
+            setId(parsed.id);
         };
 
         getUserData();
     }, []);
+
+
+
+
+    useEffect(() => {
+
+        db.transaction(function (tx) {
+            tx.executeSql(
+                'SELECT contact_number FROM user_details WHERE user_id = ?',
+                [id],
+                (tx, results) => {
+                    if (results.rows.length > 0) {
+                        let contact = results.rows.item(0).contact_number;
+                        console.log(contact);
+                        // console.log(id);
+                        setContact(contact);
+                        console.log('dhirav');
+                        setIsContactSaved(true);
+                        console.log(id, '<<<<db id>>>>');
+                    }
+                },
+            );
+        });
+    }, [id]);
+
+
+    const addContactNumber = () => {
+        console.log(userData.id);
+        console.log("contact:", contactNumber);
+        db.transaction(function (tx) {
+            tx.executeSql(
+                'UPDATE user_details SET contact_number = ? WHERE user_id = ?',
+                [contactNumber, userData.id],
+                (tx, results) => {
+                    console.log(contactNumber);
+                    console.log('User Results', results.rowsAffected);
+                    setIsContactSaved(true);
+                },
+            );
+        });
+    }
+
 
     if (!userData) {
         return (
@@ -53,26 +117,88 @@ const UserProfile = ({ navigation }) => {
                     <Card.Content>
                         <View style={styles.small}>
                             <Text style={[styles.text, { fontWeight: 'bold' }]}>First Name:</Text>
-                            <Text style={[styles.text, { color: 'blue' }]}>{userData.firstName}</Text>
+                            <Text style={[styles.text, { color: theme.colors.primary }]}>{userData.firstName}</Text>
                         </View>
 
                         <View style={styles.small}>
                             <Text style={[styles.text, { fontWeight: 'bold' }]}>Last Name:</Text>
-                            <Text style={[styles.text, { color: 'blue' }]}>{userData.lastName}</Text>
+                            <Text style={[styles.text, { color: theme.colors.primary }]}>{userData.lastName}</Text>
                         </View>
                         <View style={styles.small}>
                             <Text style={[styles.text, { fontWeight: 'bold' }]}>Email:</Text>
-                            <Text style={[styles.text, { color: 'blue' }]}>{userData.email}</Text>
+                            <Text style={[styles.text, { color: theme.colors.primary }]}>{userData.email}</Text>
                         </View>
+                        <View style={styles.small}>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contact No:</Text>
+                            <Text style={[styles.text, { color: theme.colors.primary }]}>{contact}</Text>
+                        </View>
+                        <Button style={{ width: 200, height: 55, alignSelf: 'center' }} onPress={() => setIsDialogVisible(true)}>
+                            {isContactSaved ? (
+                                <Image source={require('../../assets/pen.png')} style={{ height: 23, width: 23, marginRight: 20 }} />
+                            ) : null}
+                            <Text style={{ color: 'white' }}>
+                                {isContactSaved ? 'Edit Contact' : 'Add Contact Number'}
+                            </Text>
+                        </Button>
                         <Button onPress={googleSignOut}>
                             <Text style={{ color: 'white' }}>SignOut</Text>
                         </Button>
 
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={isDialogVisible}
+                            onRequestClose={() => {
+                                Alert.alert('Modal has been closed.');
+                                setIsDialogVisible(!isDialogVisible);
+                            }}>
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+
+                                    <Text style={styles.modalText}>{isContactSaved ? 'Edit Contact' : 'Add Contact Number'}</Text>
+                                    <TextInput
+                                        style={styles.modalInput}
+                                        keyboardType="numeric"
+                                        placeholder="Enter your phone number"
+                                        onChangeText={(contactNumber) => setContactNumber(contactNumber)}
+                                        value={contactNumber}
+                                    />
+
+                                    <View style={styles.modalButtonLabel}>
+                                        <TouchableOpacity
+                                            style={{ ...styles.modalButton, backgroundColor: theme.colors.primary }}
+                                            onPress={() => {
+
+                                                setIsDialogVisible(!isDialogVisible);
+                                                addContactNumber();
+                                                navigation.reset({
+                                                    index: 0,
+                                                    routes: [{ name: 'My Profile' }],
+                                                });
+
+                                            }}>
+                                            <Text style={styles.modalButtonLabel}>Save</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={{ ...styles.modalButton, backgroundColor: theme.colors.secondary }}
+                                            onPress={() => {
+                                                setIsDialogVisible(!isDialogVisible);
+                                                setContactNumber('');
+                                            }}>
+                                            <Text style={styles.modalButtonLabel}>Cancel</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
                     </Card.Content>
                 </Card>
             </Card.Content>
         </Card>
+
     );
 };
 
 export default UserProfile;
+

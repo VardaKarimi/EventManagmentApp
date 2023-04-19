@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, SafeAreaView, Image, StyleSheet } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -10,13 +11,14 @@ const ShowTicketDetail = (props) => {
   const eventId = props.eventId
 
   useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM table_ticket where event_id=?', [eventId], (tx, results) => {
-        var temp = [];
-        for (let i = 0; i < results.rows.length; ++i)
-          temp.push(results.rows.item(i));
-        setTicketData(temp);
-      });
+    db.transaction(function (tx) {
+      tx.executeSql(
+        'SELECT * FROM table_ticket where event_id=?', [eventId], (tx, results) => {
+          var temp = [];
+          for (let i = 0; i < results.rows.length; ++i)
+            temp.push(results.rows.item(i));
+          setTicketData(temp);
+        });
     });
   }, []);
 
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.secondary,
-    marginTop:20
+    marginTop: 20
   },
   innerContainer: {
     flex: 1,
