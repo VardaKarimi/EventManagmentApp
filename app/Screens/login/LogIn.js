@@ -288,9 +288,9 @@ const LogInScreen = ({ navigation }) => {
           </Button> */}
 
           {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
-          <Button onPress={googleLogin}>
-            <Text style={styles.loginText}>SignIn With Google</Text>
-          </Button>
+          <TouchableOpacity style={styles.btn} onPress={googleLogin}>
+            <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>SignIn With Google</Text>
+          </TouchableOpacity>
         </Background>
       )}
     </Formik>
