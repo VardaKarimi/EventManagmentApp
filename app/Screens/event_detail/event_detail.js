@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import Eventdata from '../../core/constants/EventString';
 import React, { useEffect, useState } from 'react';
 import { Title } from 'react-native-paper';

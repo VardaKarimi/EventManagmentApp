@@ -17,6 +17,8 @@ const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
     const { state, navigation } = props;
+
+
     return (
         <DrawerContentScrollView {...props} style={{ backgroundColor: theme.colors.secondary }}>
             <Text style={{ fontWeight: 'bold', fontSize: 30, padding: 10, marginTop: 10, marginBottom: 20, marginLeft: 10 }}>Eventify</Text>
@@ -30,9 +32,9 @@ function CustomDrawerContent(props) {
             <DrawerItem
                 label="My Profile"
                 icon={() => <Ionicons name="person-circle-outline" size={30} />}
-                onPress={() => navigation.navigate('UserProfile')}
+                onPress={() => navigation.navigate('My Profile')}
                 activeTintColor={theme.colors.primary}
-                focused={state.routeNames[state.index] === 'UserProfile'}
+                focused={state.routeNames[state.index] === 'My Profile'}
             />
             <DrawerItem
                 label="Favourite Events"
@@ -74,7 +76,7 @@ export default function DrawerScreen({ }) {
             headerTintColor: 'white',
         }}>
             <Drawer.Screen name="EventList" component={EventList} options={{ drawerIcon: () => <Ionicons name="calendar-outline" size={30} /> }} />
-            <Drawer.Screen name="UserProfile" component={UserProfile} options={{ drawerIcon: () => <Ionicons name="person-circle-outline" size={30} /> }} />
+            <Drawer.Screen name="My Profile" component={UserProfile} options={{ drawerIcon: () => <Ionicons name="person-circle-outline" size={30} /> }} />
             <Drawer.Screen name="Favourites" component={Favourites} options={{ drawerIcon: () => <Ionicons name="heart" size={30} /> }} />
             <Drawer.Screen name="Settings" component={Settings} options={{ drawerIcon: () => <Ionicons name="settings" size={30} /> }} />
             <Drawer.Screen name="MyTickets" component={MyTickets} options={{ drawerIcon: () => <Ionicons name="ticket" size={30} /> }} />

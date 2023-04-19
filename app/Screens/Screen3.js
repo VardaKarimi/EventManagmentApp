@@ -1,4 +1,3 @@
-/* eslint-disable react/self-closing-comp */
 /* eslint-disable prettier/prettier */
 
 
@@ -46,13 +45,13 @@ const Screen3 = () => {
 
 
   const EventInfo = flatListItems.map((item) => ({
-        Id: item.event_id,
-        Name: item.event_name,
-        Date: item.event_date,
-        Time: item.event_time,
-        Address: item.event_address,
-        Description: item.event_description,
-      }));
+    Id: item.event_id,
+    Name: item.event_name,
+    Date: item.event_date,
+    Time: item.event_time,
+    Address: item.event_address,
+    Description: item.event_description,
+  }));
 
 
 

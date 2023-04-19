@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';

@@ -6,7 +6,6 @@ import { TouchableOpacity, View, BackHandler, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
 import styles from './login_style';
-import * as yup from 'yup';
 import { Formik } from 'formik';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Background from '../../Components/Background';
@@ -22,20 +21,6 @@ import {
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
-const loginValidationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Please enter valid email')
-    .required('Email Address is Required'),
-  password: yup
-    .string()
-    .min(8, ({ min }) => `Password must be at least ${min} characters`)
-    .required('Password is required')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
-    ),
-});
 
 const LogInScreen = ({ navigation }) => {
   // console.log(navigation, 'navigation');
@@ -95,7 +80,7 @@ const LogInScreen = ({ navigation }) => {
           if (res.rows.length === 0) {
             txn.executeSql('DROP TABLE IF EXISTS user_details', []);
             txn.executeSql(
-              'CREATE TABLE IF NOT EXISTS user_details(user_id VARCHAR(20), first_name VARCHAR(30), last_name VARCHAR(30), email_id VARCHAR(50), profilr_url VARCHAR(300))',
+              'CREATE TABLE IF NOT EXISTS user_details(user_id VARCHAR(20), first_name VARCHAR(30), last_name VARCHAR(30), email_id VARCHAR(50), profilr_url VARCHAR(300) , contact_number INTEGER(20))',
               [],
             );
           }
@@ -156,9 +141,8 @@ const LogInScreen = ({ navigation }) => {
 
 
       db.transaction(function (tx) {
-        console.log(user.firstName);
         tx.executeSql(
-          'INSERT INTO user_details(user_id, first_name, last_name, email_id, profilr_url) VALUES (?,?,?,?,?)',
+          'INSERT INTO user_details(user_id, first_name, last_name, email_id, profilr_url,contact_number) VALUES (?,?,?,?,?,?)',
           [user.id, user.firstName, user.lastName, user.email, user.profilePicUrl],
           (tx, results) => {
             console.log('User Results', results.rowsAffected);
@@ -228,7 +212,6 @@ const LogInScreen = ({ navigation }) => {
   // };
   return (
     <Formik
-      validationSchema={loginValidationSchema}
       initialValues={{ email: '', password: '' }}
       onSubmit={handleSubmit}
     // setEmail(values.email);

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -6,8 +7,8 @@ import {
   alert,
   Alert,
   SafeAreaView,
-  Button,
   Text,
+  Button,
   StyleSheet,
   BackHandler,
   Image,
@@ -16,11 +17,12 @@ import {
 import Mybutton from '../../Components/Mybutton';
 import FilePicker, { types } from 'react-native-document-picker';
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import Button from '../../Components/Button';
 import Mytextinput from '../../Components/Mytextinput';
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { theme } from '../../core/style/theme';
 
 
 
@@ -124,6 +126,7 @@ const CreateEvent = ({ navigation }) => {
   // };
 
   let register_event = () => {
+    console.log('DHirav')
     console.log(EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath, UserId);
     // const c = {d1 : new Date(1672720648000)}
     if (!EventName) {
@@ -166,7 +169,8 @@ const CreateEvent = ({ navigation }) => {
               ],
               { cancelable: false }
             );
-          } else alert('Registration Failed');
+          }
+          else alert('Registration Failed');
         }
       );
     });
@@ -247,18 +251,20 @@ const CreateEvent = ({ navigation }) => {
                 style={{ textAlignVertical: 'top', padding: 10 }}
               />
               {EventImagePath !== '' && <Image source={{ uri: EventImagePath }} style={{ width: 200, alignSelf: 'center', height: 200, marginTop: 20 }}></Image>}
-              <Button style={styles.btn} title='Add Image' onPress={() => {
+              <TouchableOpacity style={styles.btn} onPress={() => {
                 if (EventImagePath !== '') {
                   setEventImagePath('');
                 } else {
                   handleFilePicker();
                 }
               }}>
-                {/* <Text style={{ color: 'white' }}>
+                <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>
                   {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
-                </Text> */}
-              </Button>
-              <Mybutton title="Submit" customClick={register_event} />
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btn} onPress={register_event} title="Submit">
+                <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>Submit</Text>
+              </TouchableOpacity>
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
@@ -270,6 +276,17 @@ const styles = StyleSheet.create({
   datePickerStyle: {
     width: 200,
     marginTop: 20,
+  },
+  btn: {
+    backgroundColor: theme.colors.primary,
+    width: "50%",
+    height: 50,
+    padding: 5,
+    margin: 10,
+    borderRadius: 10,
+    alignSelf: 'center',
+    // borderWidth: 3,
+    justifyContent: 'center',
   },
 });
 
