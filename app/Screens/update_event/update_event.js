@@ -78,7 +78,7 @@ const UpdateEvent = ({navigation,route}) => {
     console.log(inputEventId);
     db.transaction((tx) => {
       tx.executeSql(
-        'SELECT * FROM table_event_1 where event_id = ?',
+        'SELECT * FROM table_event where event_id = ?',
         [inputEventId],
         (tx, results) => {
           var len = results.rows.length;

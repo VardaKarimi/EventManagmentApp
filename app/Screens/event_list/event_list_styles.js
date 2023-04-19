@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
   },
   DescriptionStyle: {
     color: "#000000",
-    fontSize: 15
+    fontSize: 20,
+    marginLeft:5
   }
 })
 

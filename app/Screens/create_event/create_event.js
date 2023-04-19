@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   alert,
   Alert,
   SafeAreaView,
+  Button,
   Text,
   StyleSheet,
   BackHandler,
@@ -16,18 +17,17 @@ import Mybutton from '../../Components/Mybutton';
 import FilePicker, { types } from 'react-native-document-picker';
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Button from '../../Components/Button';
+// import Button from '../../Components/Button';
 import Mytextinput from '../../Components/Mytextinput';
-import {openDatabase} from 'react-native-sqlite-storage';
+import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
-import Iconic from 'react-native-vector-icons/Ionicons';
-import TextInput from '../../Components/TextInput';
 
 
-var db = openDatabase({name: 'EventDatabase1.db'});
-console.log("database opened"+db)
 
-const CreateEvent = ({navigation}) => {
+var db = openDatabase({ name: 'EventDatabase1.db' });
+console.log("database opened" + db)
+
+const CreateEvent = ({ navigation }) => {
   let [EventName, setEventName] = useState('');
   let [EventDate, setEventDate] = useState('');
   let [EventTime, setEventTime] = useState('');
@@ -78,7 +78,7 @@ const CreateEvent = ({navigation}) => {
     }
   };
 
-  console.log("database opened"+db)
+  console.log("database opened" + db)
   const showDatePickerHandler = () => {
     setShowDatePicker(true);
   };
@@ -88,11 +88,11 @@ const CreateEvent = ({navigation}) => {
     const currentDate = selectedDate || EventDate;
     setShowDatePicker(false);
     setEventDate(currentDate.toISOString());
-    
+
   };
 
 
-  const hideDatePickerHandler = ()=> {
+  const hideDatePickerHandler = () => {
     setEventDate(null);
   }
 
@@ -113,7 +113,7 @@ const CreateEvent = ({navigation}) => {
       hideTimePickerHandler();
     }
   };
-  
+
 
 
 
@@ -124,7 +124,7 @@ const CreateEvent = ({navigation}) => {
   // };
 
   let register_event = () => {
-    console.log(EventName, EventDate, EventTime,EventAddress, EventDescription, EventImagePath, UserId);
+    console.log(EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath, UserId);
     // const c = {d1 : new Date(1672720648000)}
     if (!EventName) {
       alert('Please fill name');
@@ -151,7 +151,7 @@ const CreateEvent = ({navigation}) => {
     db.transaction(function (tx) {
       tx.executeSql(
         'INSERT INTO table_event (user_id,event_name, event_date, event_time, event_address, event_description, event_image) VALUES (?,?,?,?,?,?,?)',
-        [UserId,EventName, EventDate,EventTime, EventAddress, EventDescription, EventImagePath],
+        [UserId, EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
@@ -173,72 +173,41 @@ const CreateEvent = ({navigation}) => {
   };
 
 
-  //   db.transaction(function (tx) {
-  //     console.log(EventName, EventDate, EventTime,EventAddress, EventDescription);
-  //           tx.executeSql(
-  //       'INSERT INTO event (event_name, event_date, event_time, event_address, event_description) VALUES (?,?,?,?,?)',
-  //       [EventName, EventDate,EventTime, EventAddress, EventDescription],
-  //       (tx, results) => {
-  //         console.log('Results', results.rowsAffected);
-  //         if (results.rowsAffected > 0) {
-  //           Alert.alert(
-  //             'Success',
-  //             'Event Registered Successfully',
-  //             [
-  //               {
-  //                 text: 'Ok',
-  //                 onPress: () => navigation.navigate('Home'),
-  //               },
-  //             ],
-  //             {cancelable: false},
-  //           );
-  //         } else alert('Registration Failed');
-  //       },
-  //     );
-  //   });
-  // };
 
 
 
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <View style={{ flex: 1 }}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <KeyboardAvoidingView
               behavior="padding"
-              style={{flex: 1, justifyContent: 'space-between'}}>
+              style={{ flex: 1, justifyContent: 'space-between' }}>
               <Mytextinput
                 placeholder="Enter Name"
                 onChangeText={(EventName) => setEventName(EventName)}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
               />
-              {/* <Mytextinput
-                placeholder="Enter Date"
-                onChangeText={(EventDate) => setEventDate(EventDate)}
-                maxLength={10}
-                keyboardType="numeric"
-                style={{padding: 10}}
-              /> */}
-  
-              
-  <Mytextinput 
-  editable={false}
-  placeholder="Select date"
-  value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''}
-  iconName={'calendar-outline'}
-  handleIconPress={showDatePickerHandler}
-/> 
 
-{showDatePicker && (
-  <DateTimePicker
-    value={new Date()}
-    display="default"
-    onChange={handleDateChange}
-    onCancel={hideDatePickerHandler}
-  />
-)}
+
+              <Mytextinput
+                editable={false}
+                placeholder="Select date"
+                value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
+                iconName={'calendar-outline'}
+                handleIconPress={showDatePickerHandler}
+              />
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={new Date()}
+                  display="default"
+                  onChange={handleDateChange}
+                  onCancel={hideDatePickerHandler}
+                />
+              )}
 
 
               <Mytextinput
@@ -249,17 +218,17 @@ const CreateEvent = ({navigation}) => {
                 maxLength={10}
                 keyboardType="numeric"
 
-                iconName = {'time-outline'}   handleIconPress={showTimePickerHandler}
+                iconName={'time-outline'} handleIconPress={showTimePickerHandler}
               />
               {showTimePicker && (
-               <DateTimePicker
-               value={new Date()}
-               mode="time"
-               display="default"
-               onChange={handleTimeChange}
-               onCancel={hideTimePickerHandler}
-               />
-             
+                <DateTimePicker
+                  value={new Date()}
+                  mode="time"
+                  display="default"
+                  onChange={handleTimeChange}
+                  onCancel={hideTimePickerHandler}
+                />
+
               )}
               <Mytextinput
                 placeholder="Enter Address"
@@ -267,7 +236,7 @@ const CreateEvent = ({navigation}) => {
                 maxLength={225}
                 numberOfLines={5}
                 multiline={true}
-                style={{textAlignVertical: 'top', padding: 10}}
+                style={{ textAlignVertical: 'top', padding: 10 }}
               />
               <Mytextinput
                 placeholder="Enter Description"
@@ -275,18 +244,19 @@ const CreateEvent = ({navigation}) => {
                 maxLength={225}
                 numberOfLines={5}
                 multiline={true}
-                style={{textAlignVertical: 'top', padding: 10}}
+                style={{ textAlignVertical: 'top', padding: 10 }}
               />
               {EventImagePath !== '' && <Image source={{ uri: EventImagePath }} style={{ width: 200, alignSelf: 'center', height: 200, marginTop: 20 }}></Image>}
-              <Button style={styles.btn} onPress={() => {
+              <Button style={styles.btn} title='Add Image' onPress={() => {
                 if (EventImagePath !== '') {
                   setEventImagePath('');
                 } else {
                   handleFilePicker();
                 }
-              }}><Text style={{ color: 'white' }}>
+              }}>
+                {/* <Text style={{ color: 'white' }}>
                   {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
-                </Text>
+                </Text> */}
               </Button>
               <Mybutton title="Submit" customClick={register_event} />
             </KeyboardAvoidingView>

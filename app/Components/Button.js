@@ -22,13 +22,14 @@ export default function Button({mode, style, ...props}) {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: theme.colors.primary,
-    width: '100%',
-    marginVertical: 10,
-    paddingVertical: 2,
+    width:"40%",
+    padding: 5,
+    margin: 5,
+    borderWidth: 1, justifyContent: 'center',
   },
   text: {
     fontWeight: 'bold',
     fontSize: 15,
-    lineHeight: 26,
+    Color:'#ffffff'
   },
 });

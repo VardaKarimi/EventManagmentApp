@@ -1,66 +1,107 @@
 /* eslint-disable prettier/prettier */
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { View, Text, ScrollView} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
-
-import { TextInput } from 'react-native';
+import { TextInput, BackHandler } from 'react-native';
 import styles from './event_list_styles';
 import FloatingButton from '../../Components/FloatingButton';
-
-
-
-
 import { openDatabase } from 'react-native-sqlite-storage';
+import { theme } from '../../core/style/theme';
+import { useIsFocused } from '@react-navigation/native';
+import moment from "moment";
+
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
- 
-const EventList = ({route, navigation }) => {
+const EventList = ({ route, navigation }) => {
+  const [search, setSearch] = useState()
+  const [eventData, setEventData] = useState([])
+  const [filteredData, setFilteredData] = useState()
+  const [shouldShow, setShoulShow] = useState(true)
+  const [noResults, setNoResults] = useState(false)
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to leave the app?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => BackHandler.exitApp(),
+        },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (navigation.isFocused()) {
+          return backAction();
+        }
+      },
+    );
+    return () => backHandler.remove();
+  }, []);
 
 
+  useEffect(() => {
+    if(isFocused){
+    var temp = [];
+      db.transaction((tx) => {
+        tx.executeSql('SELECT * FROM table_event ORDER BY event_id DESC', [], (tx, results) => {
 
-  const [search, setSearch] = useState();
-  const [eventData, setEventData] = useState([]);
-  const [filteredData, setFilteredData] = useState();
-  const [shouldShow, setShoulShow] = useState(true);
-  const [noResults,setNoResults] = useState(false);
+          for (let i = 0; i < results.rows.length; ++i) {
+            temp.push(results.rows.item(i));
+          }
+          setEventData(temp);
+          console.log(eventData, "my data");
+        });
+      });
+    }
+  }, [isFocused]);
+
+
+///Delete event query
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    if (route.params && route.params.ID) {
+      // const updatedEventData = eventData.filter(event => event.id !== route.params.id);
+      //  setEventData(updatedEventData);
+
       db.transaction((tx) => {
-        tx.executeSql('SELECT * FROM table_event', [], (tx, results) => {
+        tx.executeSql('DELETE FROM table_event where event_id=?', [route.params.ID], (tx, results) => {
           var temp = [];
           for (let i = 0; i < results.rows.length; ++i)
             temp.push(results.rows.item(i));
           setEventData(temp);
+          navigation.reset({
+            index:0,
+            routes: [{name:'EventList'}]
+          })
+          console.log(eventData, "<<<<<after Delete>>>>>")
         });
       });
-    });
-  
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation]);
-  
 
- 
-
-
-// console.log(eventData);
-
-  React.useEffect(()=>{
-    if(route.params && route.params.id){
-      const updatedEventData = eventData.filter(event => event.id !== route.params.id);
-      setEventData(updatedEventData);
-    
     }
-  },[route.params]);
+  }, [route.params]);
+
+
+
+
 
   const onPressShowDetails = (eventId) => {
-    navigation.navigate('showDetails', { eventId });
+    navigation.navigate('showDetails', {ID:eventId,DATA:eventData});
+    console.log(eventData,"SENDING DATA")
     
+
   }
 
   //SearchBar
@@ -71,8 +112,8 @@ const EventList = ({route, navigation }) => {
 
       const newData = eventData.filter(
         function (item) {
-          const itemData = item.Title
-            ? item.Title.toUpperCase()
+          const itemData = item.event_name
+            ? item.event_name.toUpperCase()
             : ''.toUpperCase();
           const textData = text.toUpperCase();
           return itemData.indexOf(textData) > -1;
@@ -84,70 +125,88 @@ const EventList = ({route, navigation }) => {
       } else {
         setNoResults(false);
       }
-      
+
     }
     else {
       setFilteredData(eventData);
       setSearch(text);
-     
+
     }
   };
 
   //to Display item
   const ItemView = ({ item }) => {
     return (
-      <Card style={{margin:5, backgroundColor:"#D8D8D8"}} key={item.id}>
+      <Card style={{ flex: 1, margin: 15, backgroundColor: theme.colors.secondary, borderColor: "#000000", borderWidth: 0.5 }} key={item.event_id}>
         <Card.Content>
-          <Title>{item.event_name}</Title>
+          <Title style={styles.TitleStyle}>{item.event_name}</Title>
         </Card.Content>
-        <Card.Cover source={{ uri: item.event_image }} />
+        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: item.event_image }} />
         <Card.Content>
-          <Paragraph>{item.event_description}</Paragraph>
+          <Text style={styles.DescriptionStyle}>
+            <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
+            {"  " + item.event_date}
+          </Text>
+        </Card.Content>
+        <Card.Content>
+          <Text style={styles.DescriptionStyle}>
+            <Image source={require('../../assets/location.png')} style={{ width: 20, height: 20 }} />
+            {"  " + item.event_address}
+          </Text>
         </Card.Content>
         <Card.Actions>
-          <Button onPress={() => onPressShowDetails(item.id)}>Show Details</Button>
+          <Button onPress={() => onPressShowDetails(item.event_id)}>Show Details</Button>
         </Card.Actions>
       </Card>
-
-      // <Text style={styles.ItemView} onPress={() => onPressShowDetails(item.id)}>{item.Title}</Text>
     )
   }
 
-  
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' ,margin:25 }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.primary }}>
+      <StatusBar backgroundColor={theme.colors.primary} />
       <ScrollView>
 
         <View>
           <TextInput onChangeText={(text) => searchFilterFunction(text)}
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
-            {noResults && <Text>No results found.</Text>}
-          <FlatList
-            data={filteredData}
-            keyExtractor={(item) => item.eventid.toString()}
-            ItemSeparatorComponent={""}
-            renderItem={ItemView}
-          />
+          {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
+          <View>
+            <FlatList
+              data={filteredData}
+              keyExtractor={(item) => item.eventid.toString()}
+              ItemSeparatorComponent={""}
+              renderItem={ItemView}
+            />
+          </View>
         </View>
 
-        {shouldShow && eventData.map(event => (
-  <Card style={{backgroundColor:"#D8D8D8" , flex:1, marginBottom:20, borderColor:"#000000", borderWidth:0.5}} key={event.event_id}>
-    <Card.Content>
-      <Title style={styles.TitleStyle}>{event.event_name}</Title>
-    </Card.Content>
-    <Card.Cover style={{ flex:1, padding:10, backgroundColor:"D8D8D8"}}source={{ uri: event.event_image }} />
-    <Card.Content>
-      <Paragraph style={styles.DescriptionStyle}>{event.event_description}</Paragraph>
-    </Card.Content>
-    <Card.Actions>
-      <Button onPress={() => onPressShowDetails(event.event_id)}>Show Details</Button>
-    </Card.Actions>
-  </Card>
-))}
+        {shouldShow && eventData && eventData?.map(event => (
+          <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: '#000000', borderWidth: 0.5 }} key={event.event_id}>
+            <Card.Content>
+              <Title style={styles.TitleStyle}>{event.event_name}</Title>
+            </Card.Content>
+            <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: event.event_image }} />
+            <Card.Content>
+              <Text style={styles.DescriptionStyle}>
+                <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
+                {"  " + moment(event.event_date).format('DD MMM YYYY')}
+              </Text>
+            </Card.Content>
+            <Card.Content>
+              <Text style={styles.DescriptionStyle}>
+                <Image source={require('../../assets/location.png')} style={{ width: 20, height: 20 }} />
+                {"  " + event.event_address}
+              </Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button onPress={() => onPressShowDetails(event.event_id)} style={{ borderColor: theme.colors.primary }}><Text style={{ color: theme.colors.primary }}>Show Details</Text></Button>
+            </Card.Actions>
+          </Card>
+        ))
+        }
 
 
-        <Button title="Go to Home" onPress={() => navigation.navigate('Home')} >Go to Home</Button>
-        <Button title="Go back" onPress={() => navigation.goBack()}>Go back</Button>
       </ScrollView>
       <FloatingButton navigation={navigation} />
     </View>
@@ -156,140 +215,8 @@ const EventList = ({route, navigation }) => {
 
   );
 }
+
 export default EventList;
 
 
-
-// /* eslint-disable react-hooks/exhaustive-deps */
-// /* eslint-disable react-native/no-inline-styles */
-// /* eslint-disable react/no-unstable-nested-components */
-// /* eslint-disable prettier/prettier */
-// import * as React from 'react';
-// import { useState } from 'react';
-// import { FlatList } from 'react-native-gesture-handler';
-// import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-// import { Card, Button, Title, Paragraph } from 'react-native-paper';
-// import Eventdata from '../../core/constants/EventString';
-// import { TextInput } from 'react-native';
-// import styles from './event_list_styles';
-
-// import FloatingButton from '../../Components/FloatingButton';
-
-// const EventList = ({ route, navigation }) => {
-//   const [search, setSearch] = useState()
-//   const [eventData, setEventData] = useState(Eventdata)
-//   const [filteredData, setFilteredData] = useState()
-//   const [shouldShow, setShoulShow] = useState(true)
-//   const [noResults, setNoResults] = useState(false)
-
-
-//   React.useEffect(() => {
-//     if (route.params && route.params.id) {
-//       const updatedEventData = eventData.filter(event => event.id !== route.params.id);
-//       setEventData(updatedEventData);
-
-//     }
-//   }, [route.params]);
-
-//   const onPressShowDetails = (eventId) => {
-//     navigation.navigate('showDetails', { eventId });
-
-//   }
-
-//   //SearchBar
-
-//   const searchFilterFunction = (text) => {
-
-//     if (text) {
-
-//       const newData = eventData.filter(
-//         function (item) {
-//           const itemData = item.Title
-//             ? item.Title.toUpperCase()
-//             : ''.toUpperCase();
-//           const textData = text.toUpperCase();
-//           return itemData.indexOf(textData) > -1;
-//         });
-//       setFilteredData(newData);
-//       setSearch(text);
-//       if (newData.length == 0) {
-//         setNoResults(true);
-//       } else {
-//         setNoResults(false);
-//       }
-
-//     }
-//     else {
-//       setFilteredData(eventData);
-//       setSearch(text);
-
-//     }
-//   };
-
-//   //to Display item
-//   const ItemView = ({ item }) => {
-//     return (
-//       <Card style={{ margin: 5, backgroundColor: "#D8D8D8" }} key={item.id}>
-//         <Card.Content>
-//           <Title>{item.Title}</Title>
-//         </Card.Content>
-//         <Card.Cover source={{ uri: item.imageUrl }} />
-//         <Card.Content>
-//           <Paragraph>{item.Description}</Paragraph>
-//         </Card.Content>
-//         <Card.Actions>
-//           <Button onPress={() => onPressShowDetails(item.id)}>Show Details</Button>
-//         </Card.Actions>
-
-//       </Card>
-
-//       // <Text style={styles.ItemView} onPress={() => onPressShowDetails(item.id)}>{item.Title}</Text>
-//     )
-//   }
-
-
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', margin: 25 }}>
-//       <ScrollView>
-
-//         <View>
-//           <TextInput onChangeText={(text) => searchFilterFunction(text)}
-//             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
-//           {noResults && <Text>No results found.</Text>}
-//           <FlatList
-//             data={filteredData}
-//             keyExtractor={(item, id) => id.toString()}
-//             ItemSeparatorComponent={""}
-//             renderItem={ItemView}
-//           />
-//         </View>
-
-//         {shouldShow && eventData.map(event => (
-//           <Card style={{ backgroundColor: "#D8D8D8", flex: 1, marginBottom: 20, borderColor: "#000000", borderWidth: 0.5 }} key={event.id}>
-//             <Card.Content>
-//               <Title style={styles.TitleStyle}>{event.Title}</Title>
-//             </Card.Content>
-//             <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: "D8D8D8" }} source={{ uri: event.imageUrl }} />
-//             <Card.Content>
-//               <Paragraph style={styles.DescriptionStyle}>{event.Description}</Paragraph>
-//             </Card.Content>
-//             <Card.Actions>
-//               <Button onPress={() => onPressShowDetails(event.id)}>Show Details</Button>
-//             </Card.Actions>
-//           </Card>
-//         ))
-//         }
-
-
-//         <Button title="Go to Home" onPress={() => navigation.navigate('Home')} >Go to Home</Button>
-//         <Button title="Go back" onPress={() => navigation.goBack()}>Go back</Button>
-//       </ScrollView>
-//       <FloatingButton navigation={navigation} />
-//     </View>
-
-
-
-//   );
-// }
-// export default EventList;
 
