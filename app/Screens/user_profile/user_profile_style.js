@@ -15,6 +15,16 @@ const styles = StyleSheet.create({
 
 
     },
+    btn: {
+        backgroundColor: theme.colors.primary,
+        width: "60%",
+        padding: 5,
+        margin: 5,
+        borderRadius: 10,
+        alignSelf: 'center',
+        // borderWidth: 3,
+        justifyContent: 'center',
+    },
     text: {
         margin: 10,
         fontSize: 20,

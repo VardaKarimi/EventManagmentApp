@@ -14,6 +14,7 @@ import Screen3 from '../Screens/Screen3';
 import Screen4 from '../Screens/Screen4';
 import UserProfile from '../Screens/user_profile/user_profile';
 import ShowDetails from '../Screens/event_detail/event_detail';
+import UpdateEvent from '../Screens/update_event/update_event';
 import { Image } from 'react-native';
 import DrawerScreen from '../Screens/drawer_navigation/drawer_screen';
 import { theme } from '../core/style/theme';
@@ -81,6 +82,7 @@ const Navigation = ({ }) => {
             backgroundColor: theme.colors.primary
           },
         }} />
+       <Stack.Screen name='UpdateEvent' component={UpdateEvent}/>
         <Stack.Screen name='CreateTicket' component={CreateTicket} options={{ title: '', headerStyle: { backgroundColor: theme.colors.primary } }} />
       </Stack.Navigator>
     </NavigationContainer>

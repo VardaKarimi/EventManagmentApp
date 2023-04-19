@@ -1,5 +1,19 @@
-/* eslint-disable react/self-closing-comp */
 /* eslint-disable prettier/prettier */
+
+
+
+
+
+// import Eventdata from "../core/constants/EventString";
+
+// export default function Screen3 ()  
+// {
+//   <Eventdata/>
+// }
+
+
+
+
 
 import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, SafeAreaView, Image } from 'react-native';
@@ -29,6 +43,20 @@ const Screen3 = () => {
     );
   };
 
+
+  const EventInfo = flatListItems.map((item) => ({
+    Id: item.event_id,
+    Name: item.event_name,
+    Date: item.event_date,
+    Time: item.event_time,
+    Address: item.event_address,
+    Description: item.event_description,
+  }));
+
+
+
+
+
   let listItemView = (item) => {
     return (
       <View
@@ -54,7 +82,7 @@ const Screen3 = () => {
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={{ flex: 1 }}>
           <FlatList
-            data={flatListItems}
+            data={EventInfo}
             ItemSeparatorComponent={listViewItemSeparator}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => listItemView(item)}

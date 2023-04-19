@@ -1,11 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import { View, Text, StyleSheet, Image, BackHandler, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, BackHandler, Modal, TextInput, TouchableOpacity, Alert, Button } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
 import { theme } from '../../core/style/theme';
-import Button from '../../Components/Button';
+// import Button from '../../Components/Button';
 import styles from './user_profile_style';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -20,8 +20,9 @@ const UserProfile = ({ navigation }) => {
     let [id, setId] = useState('');
     let [isDialogVisible, setIsDialogVisible] = useState(false);
     let [contactNumber, setContactNumber] = useState();
-    let [contact, setContact] = useState();
+    let [contact, setContact] = useState('');
     let [isContactSaved, setIsContactSaved] = useState(false);
+
 
 
     const googleSignOut = async () => {
@@ -40,12 +41,6 @@ const UserProfile = ({ navigation }) => {
         console.log(userData);
     };
 
-    useEffect(() => {
-        if (isFocused) {
-            prevKey => prevKey + 1; // Increment the key to force a re-render of the ShowTicketDetail component
-        }
-
-    }, [isFocused]);
 
     useEffect(() => {
         const getUserData = async () => {
@@ -63,7 +58,6 @@ const UserProfile = ({ navigation }) => {
 
 
     useEffect(() => {
-
         db.transaction(function (tx) {
             tx.executeSql(
                 'SELECT contact_number FROM user_details WHERE user_id = ?',
@@ -72,7 +66,7 @@ const UserProfile = ({ navigation }) => {
                     if (results.rows.length > 0) {
                         let contact = results.rows.item(0).contact_number;
                         console.log(contact);
-                        // console.log(id);
+                        console.log(id);
                         setContact(contact);
                         console.log('dhirav');
                         setIsContactSaved(true);
@@ -132,17 +126,17 @@ const UserProfile = ({ navigation }) => {
                             <Text style={[styles.text, { fontWeight: 'bold' }]}>Contact No:</Text>
                             <Text style={[styles.text, { color: theme.colors.primary }]}>{contact}</Text>
                         </View>
-                        <Button style={{ width: 200, height: 55, alignSelf: 'center' }} onPress={() => setIsDialogVisible(true)}>
-                            {isContactSaved ? (
-                                <Image source={require('../../assets/pen.png')} style={{ height: 23, width: 23, marginRight: 20 }} />
-                            ) : null}
-                            <Text style={{ color: 'white' }}>
-                                {isContactSaved ? 'Edit Contact' : 'Add Contact Number'}
-                            </Text>
-                        </Button>
-                        <Button onPress={googleSignOut}>
-                            <Text style={{ color: 'white' }}>SignOut</Text>
-                        </Button>
+                        <TouchableOpacity style={styles.btn} onPress={() => setIsDialogVisible(true)}>
+                            <View style={{ flexDirection: 'row', alignSelf: 'center', padding: 5 }}>
+
+                                <Image source={require('../../assets/pen.png')} style={styles.icon} />
+
+                                <Text style={{ color: 'white', padding: 10, fontWeight: 'bold' }}>{isContactSaved ? 'Edit Contact' : 'Add Contact'}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.btn} onPress={googleSignOut} >
+                            <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>Sign Out</Text>
+                        </TouchableOpacity>
 
                         <Modal
                             animationType="slide"

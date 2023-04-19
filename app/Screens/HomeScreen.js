@@ -14,7 +14,26 @@ const Home = ({ navigation }) => {
   // import {openDatabase} from 'react-native-sqlite-storage';
 
 
-  // var db = openDatabase({name: 'EventDatabase.db'});
+  var db = openDatabase({name: 'EventDatabase1.db'});
+  useEffect(() => {
+    db.transaction(function(txn)
+    {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name='table_event'",
+        [],
+        function (tx,res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length == 0) {
+             txn.executeSql('DROP TABLE IF EXISTS table_event', []);
+             txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_event(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name VARCHAR(20), event_date INT(10), event_time INT(10), event_address VARCHAR(255), event_description VARCHAR(255))',
+             [],
+             )
+          }
+        }
+      )
+    });
+   },[]);
 
   // const Home = ({ navigation }) => {
   //  useEffect(() => {
@@ -52,6 +71,7 @@ const Home = ({ navigation }) => {
       <Button title="Screen 2" onPress={() => navigation.navigate('CreateEvent')} />
       <Button title="Screen 3" onPress={() => navigation.navigate('Screen3')} />
       <Button title="Screen 4" onPress={() => navigation.navigate('Screen4')} />
+      <Button title="Screen 5" onPress={() => navigation.navigate('UpdateEvent')} />
     </View>
   );
 };
