@@ -18,14 +18,15 @@ function CreateTicket({ navigation, route }) {
   const [ticketPrice, setTicketPrice] = useState()
   const [date, setDate] = useState('')
   const [shouldShow, setShouldShow] = useState(false)
+  const [count,setCount] = useState(0)
   const { ID, DATA } = route.params;
 
   const handleDateChange = (event, selectedDate) => {
 
     const currentDate = selectedDate || EventDate;
     setShouldShow(false);
-    current = moment(currentDate).format('DD MMM YYYY')
-    setDate(current);
+    // current = moment(currentDate).format('DD MMM YYYY')
+    setDate(currentDate.getTime());
 
   };
   const handleShow = ()=>{
@@ -50,8 +51,8 @@ function CreateTicket({ navigation, route }) {
     db.transaction(function (tx) {
       console.log(ticketType, ticketPrice, date, ID)
       tx.executeSql(
-        'INSERT INTO table_ticket (event_id, ticket_type, ticket_price,ticket_valid_date ) VALUES (?,?,?,?)',
-        [ID, ticketType, ticketPrice, date],
+        'INSERT INTO table_ticket (event_id, ticket_type, ticket_price,ticket_valid_date,max_ticket) VALUES (?,?,?,?,?)',
+        [ID, ticketType, ticketPrice, date,count],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
@@ -82,7 +83,7 @@ function CreateTicket({ navigation, route }) {
           
           editable={false}
           placeholder="Valid Upto Date"
-          value={date ? date.toString() : ''}
+          value={date ? moment(date).format('DD MMM YYYY') : ''}
           iconName = {'calendar-outline'}
           handleIconPress = {handleShow}
         />
@@ -94,6 +95,17 @@ function CreateTicket({ navigation, route }) {
           />
         )}
 
+      </View>
+      <View style={CreateTicket_styles.ViewStyle}>
+        <Text style={{fontSize:20,color:'#000000'}}>Tickets Available:</Text>
+        <TouchableOpacity onPress={()=>setCount(count+1)}>
+          <Text style={{fontSize:20,borderColor:theme.colors.primary,borderWidth:1,padding:5,margin:10}}>+</Text>
+        </TouchableOpacity>
+        <Text style={{fontSize:20,borderColor:theme.colors.primary,borderWidth:1,padding:10,margin:10}}>{count}</Text>
+        <TouchableOpacity onPress={()=>setCount(count-1)}>
+          <Text style={{fontSize:20,borderColor:theme.colors.primary,borderWidth:1,padding:5,margin:10}}>-</Text>
+        </TouchableOpacity>
+        
       </View>
 
       <View>
@@ -112,7 +124,8 @@ const CreateTicket_styles = StyleSheet.create({
   },
   ViewStyle: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent:'center'
 
   },
   TextStyle: {

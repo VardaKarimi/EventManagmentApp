@@ -5,10 +5,10 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image , LogBox} from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
-import { TextInput, BackHandler } from 'react-native';
+import { TextInput, BackHandler, Alert} from 'react-native';
 import styles from './event_list_styles';
 import FloatingButton from '../../Components/FloatingButton';
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -16,6 +16,7 @@ import { theme } from '../../core/style/theme';
 import { useIsFocused } from '@react-navigation/native';
 import moment from "moment";
 
+LogBox.ignoreAllLogs();
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
@@ -148,7 +149,7 @@ const EventList = ({ route, navigation }) => {
         <Card.Content>
           <Text style={styles.DescriptionStyle}>
             <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
-            {"  " + item.event_date}
+            {"  " + moment(item.event_date).format('DD MMM YYYY')}
           </Text>
         </Card.Content>
         <Card.Content>
@@ -177,7 +178,7 @@ const EventList = ({ route, navigation }) => {
           <View>
             <FlatList
               data={filteredData}
-              keyExtractor={(item) => item.eventid.toString()}
+              keyExtractor={(item) => item.event_id.toString()}
               ItemSeparatorComponent={""}
               renderItem={ItemView}
             />
