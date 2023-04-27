@@ -93,6 +93,26 @@ const LogInScreen = ({ navigation }) => {
   useEffect(() => {
     db.transaction(function (txn) {
       txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_favourite_event'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS table_favourite_event', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_favourite_event(event_id INT(10), user_id INT(20),like_button BOOLEAN DEFAULT 1)',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
+
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='table_ticket'",
         [],
         function (tx, res) {

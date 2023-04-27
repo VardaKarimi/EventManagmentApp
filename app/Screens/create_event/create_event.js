@@ -80,7 +80,6 @@ const CreateEvent = ({ navigation }) => {
     }
   };
 
-  console.log("database opened" + db)
   const showDatePickerHandler = () => {
     setShowDatePicker(true);
   };

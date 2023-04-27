@@ -14,9 +14,28 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 15,
     padding: 10,
+    width: 330,
     backgroundColor: theme.colors.secondary,
     borderRadius: 10
 
+  },
+  serchView: {
+    flexDirection: 'row'
+  },
+  filterImage: {
+    width: 40,
+    height: 40,
+    marginTop: 15,
+  },
+  favBtn: {
+    width: 35,
+    height: 35
+  },
+  filterBtn: {
+    fontSize: 15,
+    marginBottom: 20,
+    color: theme.colors.primary,
+    fontWeight: 'bold'
   },
   fabStyle: {
   },
@@ -29,8 +48,28 @@ const styles = StyleSheet.create({
   DescriptionStyle: {
     color: "#000000",
     fontSize: 20,
-    marginLeft:5
-  }
+    marginLeft: 5
+  },
+  modalContainer: {
+    //position: "absolute",
+    left: 140,
+    zIndex: 1,
+    width: '90%',
+    alignItems: 'center',
+  },
+  modalContent: {
+    margin: 20,
+    height: 160,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowRadius: 6,
+    elevation: 6,
+  },
 })
 
 export default styles;

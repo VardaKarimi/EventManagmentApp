@@ -3,18 +3,20 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
 import { Card, Button, Title, Paragraph } from 'react-native-paper';
 import Eventdata from '../../core/constants/EventString';
-import { TextInput, BackHandler } from 'react-native';
+import { TextInput, BackHandler, ActivityIndicator } from 'react-native';
 import styles from './event_list_styles';
 import FloatingButton from '../../Components/FloatingButton';
 import { openDatabase } from 'react-native-sqlite-storage';
 import { theme } from '../../core/style/theme';
 import { useIsFocused } from '@react-navigation/native';
 import moment from "moment";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
@@ -22,10 +24,55 @@ var db = openDatabase({ name: 'EventDatabase1.db' });
 const EventList = ({ route, navigation }) => {
   const [search, setSearch] = useState()
   const [eventData, setEventData] = useState([])
+  const [favEvent, setFavEvent] = useState([]);
   const [filteredData, setFilteredData] = useState()
   const [shouldShow, setShoulShow] = useState(true)
   const [noResults, setNoResults] = useState(false)
-  const isFocused = useIsFocused()
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [isFavouriteFilterActive, setIsFavouriteFilterActive] = useState(false);
+  let [UserId, setUserId] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+
+    const getUserId = async () => {
+      let userid = await AsyncStorage.getItem('userId');
+      let parsed = JSON.parse(userid);
+      setUserId(parsed);
+    };
+
+    getUserId();
+  }, []);
+
+
+
+
+  // useLayoutEffect(() => {
+  //   console.log(favEvent, 'My EventID');
+  // }, [favEvent]);
+  useEffect(() => {
+    if (UserId) {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT DISTINCT event_id FROM table_favourite_event WHERE user_id = ?",
+          [UserId],
+          (tx, result) => {
+            let temp2 = [];
+            for (let i = 0; i < result.rows.length; i++) {
+              temp2.push(result.rows.item(i).event_id);
+            }
+            setFavEvent(temp2);
+            console.log(temp2, 'My Fav Event Id')
+          }
+        );
+      });
+    }
+  }, [UserId])
+
+
+
 
   useEffect(() => {
     const backAction = () => {
@@ -54,31 +101,53 @@ const EventList = ({ route, navigation }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
-
   useEffect(() => {
-    if(isFocused){
-    var temp = [];
+    if (isFocused) {
+      var temp = [];
       db.transaction((tx) => {
-        tx.executeSql('SELECT * FROM table_event ORDER BY event_id DESC', [], (tx, results) => {
+        tx.executeSql(
+          'SELECT * FROM table_event ORDER BY event_id DESC',
+          [],
+          (tx, results) => {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
 
-          for (let i = 0; i < results.rows.length; ++i) {
-            temp.push(results.rows.item(i));
+            setEventData(temp);
+            console.log(temp, "my all event data");
           }
-          setEventData(temp);
-          console.log(eventData, "my data");
-        });
+        );
       });
     }
-  }, [isFocused]);
+  }, [isFocused, isFavouriteFilterActive]);
 
 
-///Delete event query
+  useEffect(() => {
+    if (isFocused) {
+      var temp1 = [];
+      if (isFavouriteFilterActive) {
+        db.transaction((tx) => {
+          tx.executeSql(
+            `SELECT DISTINCT * FROM table_event INNER JOIN table_favourite_event ON table_event.event_id = table_favourite_event.event_id  WHERE table_favourite_event.user_id = ? ORDER BY table_event.event_id DESC`,
+            [UserId],
+            (tx, results) => {
+              for (let i = 0; i < results.rows.length; ++i) {
+                temp1.push(results.rows.item(i));
+              }
+              setEventData(temp1);
+              console.log(temp1, "my fav data");
+            }
+          );
+        });
+      }
+    }
+  }, [isFocused, isFavouriteFilterActive]);
 
-  React.useEffect(() => {
+
+  ///Delete event query
+
+  useEffect(() => {
     if (route.params && route.params.ID) {
-      // const updatedEventData = eventData.filter(event => event.id !== route.params.id);
-      //  setEventData(updatedEventData);
-
       db.transaction((tx) => {
         tx.executeSql('DELETE FROM table_event where event_id=?', [route.params.ID], (tx, results) => {
           var temp = [];
@@ -86,8 +155,8 @@ const EventList = ({ route, navigation }) => {
             temp.push(results.rows.item(i));
           setEventData(temp);
           navigation.reset({
-            index:0,
-            routes: [{name:'EventList'}]
+            index: 0,
+            routes: [{ name: 'EventList' }]
           })
           console.log(eventData, "<<<<<after Delete>>>>>")
         });
@@ -96,16 +165,102 @@ const EventList = ({ route, navigation }) => {
     }
   }, [route.params]);
 
+  // favourite button
+  const toggleFavorite = (event) => {
+    const updatedEvents = [...eventData];
+    const index = updatedEvents.findIndex((item) => item.event_id === event.event_id);
+    const updatedEvent = { ...event, isFavorite: !event.isFavorite };
+    updatedEvents.splice(index, 1, updatedEvent);
+    setEventData(updatedEvents);
 
+    db.transaction((tx) => {
+      if (updatedEvent.isFavorite) {
+        tx.executeSql(
+          'INSERT INTO table_favourite_event (event_id, user_id) SELECT DISTINCT ?,? WHERE NOT EXISTS (SELECT 1 FROM table_favourite_event WHERE event_id = ? AND user_id = ?)',
+          [updatedEvent.event_id, UserId, updatedEvent.event_id, UserId],
+          (tx, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Event ID inserted to table_favourite_event');
+              if (UserId) {
+                db.transaction((tx) => {
+                  tx.executeSql(
+                    "SELECT DISTINCT event_id FROM table_favourite_event WHERE user_id = ?",
+                    [UserId],
+                    (tx, result) => {
+                      let temp2 = [];
+                      for (let i = 0; i < result.rows.length; i++) {
+                        temp2.push(result.rows.item(i).event_id);
+                      }
+                      setFavEvent(temp2);
+                      console.log(temp2, 'My Fav Event Id')
+                    }
+                  );
+                });
+              }
+              console.log(favEvent);
+            } else {
+              console.log('Event ID already exists in table_favourite_event');
+            }
+          },
+          (error) => {
+            console.log('Error inserting event ID to table_favourite_event:', error);
+          }
+        );
+      } else {
+        tx.executeSql(
+          'DELETE FROM table_favourite_event WHERE event_id = ?',
+          [updatedEvent.event_id],
+          (tx, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Event ID deleted from table_favourite_event');
+              if (UserId) {
+                db.transaction((tx) => {
+                  tx.executeSql(
+                    "SELECT DISTINCT event_id FROM table_favourite_event WHERE user_id = ?",
+                    [UserId],
+                    (tx, result) => {
+                      let temp2 = [];
+                      for (let i = 0; i < result.rows.length; i++) {
+                        temp2.push(result.rows.item(i).event_id);
+                      }
+                      setFavEvent(temp2);
+                      console.log(temp2, 'My Fav Event Id')
+                    }
+                  );
+                });
+              }
+              favEvent.pop(updatedEvent.event_id);
+              console.log(favEvent)
+            }
+          },
+          (error) => {
+            console.log('Error deleting event ID from table_favourite_event:', error);
+          }
+        );
+      }
+    });
 
+  };
 
-
+  // show details
   const onPressShowDetails = (eventId) => {
-    navigation.navigate('showDetails', {ID:eventId,DATA:eventData});
-    console.log(eventData,"SENDING DATA")
-    
+    navigation.navigate('showDetails', { ID: eventId, DATA: eventData });
+    console.log(eventData, "SENDING DATA")
+
 
   }
+
+  const checkIsFav = (event_id) => {
+    //console.log(event_id, '<<>>');
+    var index = favEvent.findIndex((item) => item.event_id === event_id);
+    if (index > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  };
 
   //SearchBar
 
@@ -150,6 +305,7 @@ const EventList = ({ route, navigation }) => {
             <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
             {"  " + item.event_date}
           </Text>
+
         </Card.Content>
         <Card.Content>
           <Text style={styles.DescriptionStyle}>
@@ -170,10 +326,45 @@ const EventList = ({ route, navigation }) => {
       <StatusBar backgroundColor={theme.colors.primary} />
       <ScrollView>
 
-        <View>
+        <View style={styles.serchView}>
           <TextInput onChangeText={(text) => searchFilterFunction(text)}
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
           {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
+
+          <TouchableOpacity style={styles.filterButton} onPress={() => setShowFilterDropdown(true)}>
+            <Image style={styles.filterImage} source={require('../../assets/filter.png')} />
+          </TouchableOpacity>
+          <TouchableWithoutFeedback onPress={() => setShowFilterDropdown(!showFilterDropdown)}>
+            <Modal visible={showFilterDropdown} animationType="slide" onRequestClose={() => setShowFilterDropdown(false)}
+              transparent={true}>
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+
+                  {/* Filter Code */}
+
+                  <TouchableOpacity onPress={() => {
+                    navigation.navigate('EventList');
+                    setShowFilterDropdown(false);
+                    setIsFavouriteFilterActive(false);
+                  }}>
+                    <Text style={styles.filterBtn}>All Events</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {
+                    setIsFavouriteFilterActive(true);
+                    setShowFilterDropdown(false)
+                  }}>
+                    <Text style={styles.filterBtn}>Favourite Events</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ backgroundColor: theme.colors.secondary, width: 60, height: 40 }} onPress={() => { setShowFilterDropdown(false) }}>
+                    <Text style={{ alignSelf: 'center', marginTop: 10, color: theme.colors.primary, fontWeight: 'bold' }}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </TouchableWithoutFeedback>
+
+
+
           <View>
             <FlatList
               data={filteredData}
@@ -187,7 +378,19 @@ const EventList = ({ route, navigation }) => {
         {shouldShow && eventData && eventData?.map(event => (
           <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: '#000000', borderWidth: 0.5 }} key={event.event_id}>
             <Card.Content>
-              <Title style={styles.TitleStyle}>{event.event_name}</Title>
+              <View style={{ flexDirection: 'row', flex: 1 }}>
+                <View style={{ flex: 0.9 }}>
+                  <Title style={styles.TitleStyle}>{event.event_name}</Title>
+                </View>
+                <View style={{ flex: 0.1 }}>
+                  <TouchableOpacity onPress={() => toggleFavorite(event)}>
+                    <Image
+                      source={favEvent.includes(event.event_id) ? require('../../assets/heart2.png') : require('../../assets/heart.png')}
+                      style={{ width: 35, height: 35, marginTop: -5 }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </Card.Content>
             <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: event.event_image }} />
             <Card.Content>
