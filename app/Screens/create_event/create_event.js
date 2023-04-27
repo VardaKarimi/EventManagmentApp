@@ -80,7 +80,6 @@ const CreateEvent = ({ navigation }) => {
     }
   };
 
-  console.log("database opened" + db)
   const showDatePickerHandler = () => {
     setShowDatePicker(true);
   };
@@ -160,7 +159,7 @@ const CreateEvent = ({ navigation }) => {
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
-              'Event Created',
+              'Event Created SuccessFully',
               [
                 {
                   text: 'Ok',

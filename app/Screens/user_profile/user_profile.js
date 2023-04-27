@@ -77,7 +77,12 @@ const UserProfile = ({ navigation }) => {
                         console.log(id);
                         setContact(contact);
                         console.log('dhirav');
-                        setIsContactSaved(true);
+                        if (contact === null) {
+                            setIsContactSaved(false);
+                        } else {
+                            setIsContactSaved(true);
+                        }
+                        //setIsContactSaved(true);
                         console.log(id, '<<<<db id>>>>');
                     }
                 },
@@ -137,7 +142,7 @@ const UserProfile = ({ navigation }) => {
                         <TouchableOpacity style={styles.btn} onPress={() => setIsDialogVisible(true)}>
                             <View style={{ flexDirection: 'row', alignSelf: 'center', padding: 5 }}>
 
-                                <Image source={require('../../assets/pen.png')} style={styles.icon} />
+                                {isContactSaved ? <Image source={require('../../assets/pen.png')} style={styles.icon} /> : null}
 
                                 <Text style={{ color: 'white', padding: 10, fontWeight: 'bold' }}>{isContactSaved ? 'Edit Contact' : 'Add Contact'}</Text>
                             </View>

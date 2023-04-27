@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable prettier/prettier */
+import React, { useState } from 'react';
 import {
   View,
   ScrollView,
@@ -6,20 +7,22 @@ import {
   Alert,
   SafeAreaView,
   Text,
+  TouchableOpacity,
 } from 'react-native';
 import Mytextinput from '../../Components/Mytextinput';
 import Mybutton from '../../Components/Mybutton';
-import {openDatabase} from 'react-native-sqlite-storage';
+import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Iconic from 'react-native-vector-icons/Ionicons';
 import Mytext from '../../Components/Mytext';
 
-var db = openDatabase({name: 'EventDatabase1.db'});
+var db = openDatabase({ name: 'EventDatabase1.db' });
 
-const UpdateEvent = ({navigation,route}) => {
+
+const UpdateEvent = ({ navigation, route }) => {
   const { event } = route.params;
 
- 
+
   let [inputEventId, setInputEventId] = useState(event.event_id);
   let [EventName, setEventName] = useState(event.event_name);
   let [EventDate, setEventDate] = useState(event.event_date);
@@ -41,11 +44,11 @@ const UpdateEvent = ({navigation,route}) => {
     const currentDate = selectedDate || EventDate;
     setShowDatePicker(false);
     setEventDate(currentDate.toISOString());
-    
+
   };
 
 
-  const hideDatePickerHandler = ()=> {
+  const hideDatePickerHandler = () => {
     setEventDate(null);
   }
 
@@ -87,7 +90,7 @@ const UpdateEvent = ({navigation,route}) => {
             updateAllStates(res.event_name, res.event_date, res.event_time, res.event_address, res.event_description);
           } else {
             Alert.alert('No user found');
-            updateAllStates('', '', '','','');
+            updateAllStates('', '', '', '', '');
           }
         },
       );
@@ -95,7 +98,7 @@ const UpdateEvent = ({navigation,route}) => {
   }, []);
 
   let updateEvent = () => {
-   
+
 
     if (!inputEventId) {
       Alert.alert('Please fill Event id');
@@ -125,7 +128,7 @@ const UpdateEvent = ({navigation,route}) => {
     db.transaction((tx) => {
       tx.executeSql(
         'UPDATE table_event set event_name=?, event_date=? , event_time=?, event_address=?, event_description=? where event_id=?',
-        [EventName, EventDate,EventTime, EventAddress, EventDescription, inputEventId],
+        [EventName, EventDate, EventTime, EventAddress, EventDescription, inputEventId],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
@@ -135,10 +138,10 @@ const UpdateEvent = ({navigation,route}) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('showDetails',{eventId:inputEventId}),
+                  onPress: () => navigation.navigate('showDetails', { eventId: inputEventId }),
                 },
               ],
-              {cancelable: false},
+              { cancelable: false },
             );
           } else Alert.alert('Updation Failed');
         },
@@ -146,37 +149,37 @@ const UpdateEvent = ({navigation,route}) => {
     });
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <View style={{ flex: 1 }}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <KeyboardAvoidingView
               behavior="padding"
-              style={{flex: 1, justifyContent: 'space-between'}}>
+              style={{ flex: 1, justifyContent: 'space-between' }}>
               <Mytext
-              value={inputEventId}/>
+                value={inputEventId} />
               {/* <Mybutton title="Search Event" customClick={searchEvent} /> */}
               <Mytextinput
                 placeholder="Enter Name"
                 value={EventName}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
                 onChangeText={(EventName) => setEventName(EventName)}
               />
-               <Mytextinput 
+              <Mytextinput
 
                 editable={false}
                 placeholder="Select date"
-                value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''}
-                iconName = {'calendar-outline'}   handleIconPress={showDatePickerHandler}/> 
-                {showDatePicker && (
+                value={EventDate ? new Date(EventDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
+                iconName={'calendar-outline'} handleIconPress={showDatePickerHandler} />
+              {showDatePicker && (
                 <DateTimePicker
-                 value={  new Date()}
-                 display="default"
-                 onChange={handleDateChange}
-                 onCancel={hideDatePickerHandler}
-                 />
+                  value={new Date()}
+                  display="default"
+                  onChange={handleDateChange}
+                  onCancel={hideDatePickerHandler}
+                />
 
-                )}
+              )}
 
               <Mytextinput
                 editable={false}
@@ -186,31 +189,31 @@ const UpdateEvent = ({navigation,route}) => {
                 maxLength={10}
                 keyboardType="numeric"
 
-                iconName = {'time-outline'}   handleIconPress={showTimePickerHandler}
+                iconName={'time-outline'} handleIconPress={showTimePickerHandler}
               />
               {showTimePicker && (
-               <DateTimePicker
-               value={new Date()}
-               mode="time"
-               display="default"
-               onChange={handleTimeChange}
-               onCancel={hideTimePickerHandler}
-               />
-             
+                <DateTimePicker
+                  value={new Date()}
+                  mode="time"
+                  display="default"
+                  onChange={handleTimeChange}
+                  onCancel={hideTimePickerHandler}
+                />
+
               )}
               <Mytextinput
                 placeholder="Enter Address"
                 value={EventAddress}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
                 onChangeText={(EventAddress) => setEventAddress(EventAddress)}
               />
               <Mytextinput
                 placeholder="Enter Description"
                 value={EventDescription}
-                style={{padding: 10}}
+                style={{ padding: 10 }}
                 onChangeText={(EventDescription) => setEventDescription(EventDescription)}
               />
-              <Mybutton title="Update Event" customClick={updateEvent} />
+              <TouchableOpacity onPress={updateEvent}><Text>Sybmit</Text></TouchableOpacity>
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
