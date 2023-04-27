@@ -24,7 +24,15 @@ const UserProfile = ({ navigation }) => {
     let [isContactSaved, setIsContactSaved] = useState(false);
 
 
-
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.goBack();
+            return true;
+        });
+        return () => {
+            backHandler.remove();
+        };
+    }, []);
     const googleSignOut = async () => {
         try {
             await AsyncStorage.removeItem('email');
