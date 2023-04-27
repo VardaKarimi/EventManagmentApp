@@ -171,7 +171,6 @@ const EventList = ({ route, navigation }) => {
     const updatedEvent = { ...event, isFavorite: !event.isFavorite };
     updatedEvents.splice(index, 1, updatedEvent);
     setEventData(updatedEvents);
-
     db.transaction((tx) => {
       if (updatedEvent.isFavorite) {
         tx.executeSql(
@@ -384,7 +383,7 @@ const EventList = ({ route, navigation }) => {
                 <View style={{ flex: 0.1 }}>
                   <TouchableOpacity onPress={() => toggleFavorite(event)}>
                     <Image
-                      source={favEvent.includes(event.event_id) ? require('../../assets/heart2.png') : require('../../assets/heart.png')}
+                      source={(favEvent.includes(event.event_id) || event.isFavorite) ? require('../../assets/heart2.png') : require('../../assets/heart.png')}
                       style={{ width: 35, height: 35, marginTop: -5 }}
                     />
                   </TouchableOpacity>
