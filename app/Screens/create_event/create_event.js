@@ -159,7 +159,7 @@ const CreateEvent = ({ navigation }) => {
           if (results.rowsAffected > 0) {
             Alert.alert(
               'Success',
-              'You are Registered Successfully',
+              'Event Created SuccessFully',
               [
                 {
                   text: 'Ok',
@@ -169,7 +169,7 @@ const CreateEvent = ({ navigation }) => {
               { cancelable: false }
             );
           }
-          else alert('Registration Failed');
+          else alert('Event Creation Failed..!!');
         }
       );
     });

@@ -49,7 +49,7 @@ const LogInScreen = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-
+  //table_event creation
   useEffect(() => {
     db.transaction(function (txn) {
       txn.executeSql(
@@ -70,6 +70,7 @@ const LogInScreen = ({ navigation }) => {
 
   }, []);
 
+  //user_details table creation
   useEffect(() => {
     db.transaction(function (txn) {
       txn.executeSql(
@@ -90,6 +91,8 @@ const LogInScreen = ({ navigation }) => {
 
   }, []);
 
+
+  //table_ticket creation
   useEffect(() => {
     db.transaction(function (txn) {
       txn.executeSql(
@@ -120,7 +123,28 @@ const LogInScreen = ({ navigation }) => {
           if (res.rows.length === 0) {
             txn.executeSql('DROP TABLE IF EXISTS table_ticket', []);
             txn.executeSql(
-              'CREATE TABLE IF NOT EXISTS table_ticket(ticket_id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INT(10), ticket_type VARCHAR(20), ticket_price DECIMAL(10,2), ticket_valid_date INT(10))',
+              'CREATE TABLE IF NOT EXISTS table_ticket(ticket_id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INT(10), ticket_type VARCHAR(20), ticket_price DECIMAL(10,2), ticket_valid_date INT(10),max_ticket INT(10))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
+  }, []);
+
+  //table_my_ticket creation
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_my_ticket'",
+        [],
+        function (tx, res) {
+          // console.log('item:', res.rows.length);
+          if (res.rows.length === 0) {
+            txn.executeSql('DROP TABLE IF EXISTS table_ticket', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS table_my_ticket(ticket_id INT(10),event_id INT(10),user_id INT(10),time INT(20),number_of_tickets INT(10))',
               [],
             );
           }

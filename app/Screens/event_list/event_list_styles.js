@@ -12,9 +12,10 @@ const styles = StyleSheet.create({
     borderColor: "#00235B",
     borderWidth: 1,
     margin: 10,
+    marginLeft: 17,
     fontSize: 15,
     padding: 10,
-    width: 330,
+    width: 320,
     backgroundColor: theme.colors.secondary,
     borderRadius: 10
 

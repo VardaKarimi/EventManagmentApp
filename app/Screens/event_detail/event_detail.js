@@ -12,6 +12,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import CustomMaterialMenu from './Menu/menu';
 import event_detail_styles from './event_detail_style';
 import { openDatabase } from 'react-native-sqlite-storage';
+import moment from "moment";
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
@@ -84,9 +85,9 @@ function ShowDetails({ route, navigation }) {
           <View>
             <Image style={event_detail_styles.ImageStyle} source={{ uri: event.event_image }} />
             <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Date: </Text>
-            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{event.event_date}</Text>
+            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{moment(event.event_date).format('DD MMM YYYY')}</Text>
             <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Time: </Text>
-            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{event.event_time}</Text>
+            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{moment(event.event_time).format('LT')}</Text>
             <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Location: </Text>
             <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}> {event.event_address}</Text>
             <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> About:</Text>
