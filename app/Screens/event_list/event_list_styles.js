@@ -34,9 +34,10 @@ const styles = StyleSheet.create({
   },
   filterBtn: {
     fontSize: 15,
-    marginBottom: 20,
+    marginBottom: 0,
+
     color: theme.colors.primary,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   fabStyle: {
   },

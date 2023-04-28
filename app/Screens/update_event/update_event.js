@@ -15,6 +15,7 @@ import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Iconic from 'react-native-vector-icons/Ionicons';
 import Mytext from '../../Components/Mytext';
+import styles from './update_event_styles';
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
@@ -188,8 +189,9 @@ const UpdateEvent = ({ navigation, route }) => {
                 onChangeText={(EventTime) => setEventTime(EventTime)}
                 maxLength={10}
                 keyboardType="numeric"
+                iconName={'time-outline'}
+                handleIconPress={showTimePickerHandler}
 
-                iconName={'time-outline'} handleIconPress={showTimePickerHandler}
               />
               {showTimePicker && (
                 <DateTimePicker
@@ -213,7 +215,9 @@ const UpdateEvent = ({ navigation, route }) => {
                 style={{ padding: 10 }}
                 onChangeText={(EventDescription) => setEventDescription(EventDescription)}
               />
-              <TouchableOpacity onPress={updateEvent}><Text>Sybmit</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.btn} onPress={updateEvent}>
+                <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>Submit</Text>
+              </TouchableOpacity>
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
