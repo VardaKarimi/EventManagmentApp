@@ -330,7 +330,7 @@ const EventList = ({ route, navigation }) => {
             placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
           {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
 
-          <TouchableOpacity style={styles.filterButton} onPress={() => setShowFilterDropdown(true)}>
+          <TouchableOpacity style={styles.filterBtn} onPress={() => setShowFilterDropdown(true)}>
             <Image style={styles.filterImage} source={require('../../assets/filter.png')} />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={() => setShowFilterDropdown(!showFilterDropdown)}>
