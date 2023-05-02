@@ -344,7 +344,6 @@ const EventList = ({ route, navigation }) => {
                 <View style={styles.modalContent}>
 
                   {/* Filter Code */}
-
                   <TouchableOpacity onPress={() => {
                     navigation.navigate('EventList');
                     setShowFilterDropdown(false);
@@ -358,7 +357,7 @@ const EventList = ({ route, navigation }) => {
                   }}>
                     <Text style={styles.filterBtn}>Favourite Events</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: theme.colors.secondary, width: 60, height: 40 }} onPress={() => { setShowFilterDropdown(false) }}>
+                  <TouchableOpacity style={{ backgroundColor: theme.colors.secondary, width: 90, height: 40, borderRadius: 18 }} onPress={() => { setShowFilterDropdown(false) }}>
                     <Text style={{ alignSelf: 'center', marginTop: 10, color: theme.colors.primary, fontWeight: 'bold' }}>Close</Text>
                   </TouchableOpacity>
                 </View>
