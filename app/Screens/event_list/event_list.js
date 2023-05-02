@@ -171,7 +171,6 @@ const EventList = ({ route, navigation }) => {
     const updatedEvent = { ...event, isFavorite: !event.isFavorite };
     updatedEvents.splice(index, 1, updatedEvent);
     setEventData(updatedEvents);
-
     db.transaction((tx) => {
       if (updatedEvent.isFavorite) {
         tx.executeSql(
@@ -324,15 +323,20 @@ const EventList = ({ route, navigation }) => {
     <View style={{ flex: 1, backgroundColor: theme.colors.primary }}>
       <StatusBar backgroundColor={theme.colors.primary} />
       <ScrollView>
+        <View >
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'column' }}>
+              <TextInput onChangeText={(text) => searchFilterFunction(text)}
+                placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
+              {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
+            </View>
+            <View style={{ flexDirection: 'column' }}>
+              <TouchableOpacity style={styles.filterBtn} onPress={() => setShowFilterDropdown(true)}>
+                <Image style={styles.filterImage} source={require('../../assets/filter.png')} />
+              </TouchableOpacity>
+            </View>
+          </View>
 
-        <View style={styles.serchView}>
-          <TextInput onChangeText={(text) => searchFilterFunction(text)}
-            placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
-          {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
-
-          <TouchableOpacity style={styles.filterBtn} onPress={() => setShowFilterDropdown(true)}>
-            <Image style={styles.filterImage} source={require('../../assets/filter.png')} />
-          </TouchableOpacity>
           <TouchableWithoutFeedback onPress={() => setShowFilterDropdown(!showFilterDropdown)}>
             <Modal visible={showFilterDropdown} animationType="slide" onRequestClose={() => setShowFilterDropdown(false)}
               transparent={true}>
@@ -340,7 +344,6 @@ const EventList = ({ route, navigation }) => {
                 <View style={styles.modalContent}>
 
                   {/* Filter Code */}
-
                   <TouchableOpacity onPress={() => {
                     navigation.navigate('EventList');
                     setShowFilterDropdown(false);
@@ -354,7 +357,7 @@ const EventList = ({ route, navigation }) => {
                   }}>
                     <Text style={styles.filterBtn}>Favourite Events</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: theme.colors.secondary, width: 60, height: 40 }} onPress={() => { setShowFilterDropdown(false) }}>
+                  <TouchableOpacity style={{ backgroundColor: theme.colors.secondary, width: 90, height: 40, borderRadius: 18 }} onPress={() => { setShowFilterDropdown(false) }}>
                     <Text style={{ alignSelf: 'center', marginTop: 10, color: theme.colors.primary, fontWeight: 'bold' }}>Close</Text>
                   </TouchableOpacity>
                 </View>
@@ -384,7 +387,7 @@ const EventList = ({ route, navigation }) => {
                 <View style={{ flex: 0.1 }}>
                   <TouchableOpacity onPress={() => toggleFavorite(event)}>
                     <Image
-                      source={favEvent.includes(event.event_id) ? require('../../assets/heart2.png') : require('../../assets/heart.png')}
+                      source={(favEvent.includes(event.event_id) || event.isFavorite) ? require('../../assets/heart2.png') : require('../../assets/heart.png')}
                       style={{ width: 35, height: 35, marginTop: -5 }}
                     />
                   </TouchableOpacity>
