@@ -25,7 +25,10 @@ function CustomDrawerContent(props) {
             <DrawerItem
                 label="Event List"
                 icon={() => <Image source={require('../../assets/eventlist.png')} style={{ width: 30, height: 30 }} />}
-                onPress={() => navigation.navigate('EventList')}
+                onPress={() => navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'EventList' }],
+                })}
                 activeTintColor={theme.colors.primary}
                 focused={state.routeNames[state.index] === 'EventList'}
             />
