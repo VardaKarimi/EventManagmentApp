@@ -18,5 +18,5 @@ Eventify is an event registration and ticket purchasing app that allows users to
 
 
 
-![Logo](https://raw.githubusercontent.com/VardaKarimi/git-test/master/eventify-high-resolution-logo-color-on-transparent-background%20(2).png?token=GHSAT0AAAAAAB6JJ22HIYGQWIZ35HHEBZX2ZCSF2OA)
+![Logo](https://raw.githubusercontent.com/VardaKarimi/git-test/master/eventify-high-resolution-logo-color-on-transparent-background%20(2).png?token=GHSAT0AAAAAAB6JJ22G6KBCVZARXXDPCXJEZCSGEDQ)
 
