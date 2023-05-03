@@ -66,10 +66,12 @@ function ShowDetails({ route, navigation }) {
             {console.log(event, "<<<EVENT>>>")}
             {console.log(DATA, "receiving data")}
           </Title>
+
+          {/* show menu if user created the event */}
+
           {showMenu
             ? <CustomMaterialMenu
               onEventEdit={() => {
-                //console.log("eventDetails =>" + event)
                 navigation.navigate('UpdateEvent', { event })
               }}
               onEventDelete={() =>
@@ -82,16 +84,19 @@ function ShowDetails({ route, navigation }) {
             /> : null}
         </View>
         <ScrollView>
+
+          {/* Displaying details of event */}
+
           <View>
             <Image style={event_detail_styles.ImageStyle} source={{ uri: event.event_image }} />
-            <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Date: </Text>
-            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{moment(event.event_date).format('DD MMM YYYY')}</Text>
-            <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Time: </Text>
-            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{moment(event.event_time).format('LT')}</Text>
-            <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Location: </Text>
-            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}> {event.event_address}</Text>
-            <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> About:</Text>
-            <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5, textAlign: 'justify' }}> {event.event_description}</Text>
+            <Text style={event_detail_styles.headingStyle}> Date: </Text>
+            <Text style={event_detail_styles.detailStyle}>{moment(event.event_date).format('DD MMM YYYY')}</Text>
+            <Text style={event_detail_styles.headingStyle}> Time: </Text>
+            <Text style={event_detail_styles.detailStyle}>{moment(event.event_time).format('LT')}</Text>
+            <Text style={event_detail_styles.headingStyle}> Location: </Text>
+            <Text style={event_detail_styles.detailStyle}> {event.event_address}</Text>
+            <Text style={event_detail_styles.headingStyle}> About:</Text>
+            <Text style={event_detail_styles.detailStyle}> {event.event_description}</Text>
 
             <ShowTicketDetail key={ticketDetailKey} ID={ID} DATA={DATA} />
 

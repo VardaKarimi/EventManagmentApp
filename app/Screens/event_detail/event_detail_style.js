@@ -17,6 +17,12 @@ const event_detail_styles = StyleSheet.create({
       height: 200, 
       marginBottom: 10
     },
+    headingStyle:{
+      fontSize: 20, color: "#000000", fontWeight: 500
+    },
+    detailStyle:{
+      fontSize: 16, color: "#000000", marginLeft: 5, textAlign: 'justify'
+    }
    
   })
   export default event_detail_styles;

@@ -9,11 +9,9 @@ import Logo2 from '../../Components/Logo2';
 
 const SplashScreen = ({ navigation }) => {
 
-  // console.log(Global.setGlobalEmail());
   useEffect(() => {
     setTimeout(() => {
-      // navigation.navigate('LogIn');
-      // const email = Global.sampleVar;
+     
       AsyncStorage.getItem('email').then(email => {
         console.log(email, '<<<!!!EMail!!!>>>>');
         if (email == null) {
@@ -29,7 +27,6 @@ const SplashScreen = ({ navigation }) => {
 
     <Background>
       <Logo2 />
-      {/* <Text style={styles.link}> Event Management Application</Text> */}
     </Background>
   );
 };
