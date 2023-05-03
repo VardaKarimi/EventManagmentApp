@@ -291,12 +291,31 @@ const EventList = ({ route, navigation }) => {
   };
 
   //to Display item
-  const ItemView = ({ item }) => {
+  const ItemView = ({ item, event }) => {
+    //const [isFavorite, setIsFavorite] = useState(false);
+    // const toggleFavorite = () => {
+    //   setIsFavorite(!isFavorite);
+    //   // You can add code here to update the favorite status of the item in the database or storage
+    // };
     return (
       <Card style={{ flex: 1, margin: 15, backgroundColor: theme.colors.secondary, borderColor: "#000000", borderWidth: 0.5 }} key={item.event_id}>
+
         <Card.Content>
-          <Title style={styles.TitleStyle}>{item.event_name}</Title>
+          <View style={{ flexDirection: 'row', flex: 1 }}>
+            <View style={{ flex: 0.9 }}>
+              <Title style={styles.TitleStyle}>{item.event_name}</Title>
+            </View>
+            <View style={{ flex: 0.1 }}>
+              <TouchableOpacity onPress={() => toggleFavorite(item)}>
+                <Image
+                  source={(favEvent.includes(item.event_id) || item.isFavorite) ? require('../../assets/heart2.png') : require('../../assets/heart.png')}
+                  style={{ width: 35, height: 35, marginTop: -5 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
         </Card.Content>
+
         <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: item.event_image }} />
         <Card.Content>
           <Text style={styles.DescriptionStyle}>
@@ -314,6 +333,9 @@ const EventList = ({ route, navigation }) => {
         <Card.Actions>
           <Button onPress={() => onPressShowDetails(item.event_id)}>Show Details</Button>
         </Card.Actions>
+        {/* <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }} onPress={toggleFavorite}>
+          <Image source={isFavorite ? require('../../assets/heart2.png') : require('../../assets/heart.png')} style={{ width: 35, height: 35 }} />
+        </TouchableOpacity> */}
       </Card>
     )
   }
@@ -345,7 +367,10 @@ const EventList = ({ route, navigation }) => {
 
                   {/* Filter Code */}
                   <TouchableOpacity onPress={() => {
-                    navigation.navigate('EventList');
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'EventList' }],
+                    });
                     setShowFilterDropdown(false);
                     setIsFavouriteFilterActive(false);
                   }}>
