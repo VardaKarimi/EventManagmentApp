@@ -34,7 +34,6 @@ function ShowDetails({ route, navigation }) {
     if (isFocused) {
       setTicketDetailKey(prevKey => prevKey + 1); // Increment the key to force a re-render of the ShowTicketDetail component
       console.log(DATA, "received data")
-
     }
 
   }, [isFocused]);
@@ -72,7 +71,7 @@ function ShowDetails({ route, navigation }) {
           {showMenu
             ? <CustomMaterialMenu
               onEventEdit={() => {
-                navigation.navigate('UpdateEvent', { event })
+                navigation.navigate('UpdateEvent', { ID:ID,DATA:DATA})
               }}
               onEventDelete={() =>
                 navigation.navigate('EventList', {ID:ID })
