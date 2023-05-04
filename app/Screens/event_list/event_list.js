@@ -3,11 +3,10 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, TouchableWithoutFeedback, Alert, LogBox } from 'react-native';
-import { Card, Button, Title, Paragraph } from 'react-native-paper';
-import Eventdata from '../../core/constants/EventString';
+import { Card, Button, Title} from 'react-native-paper';
 import { TextInput, BackHandler, ActivityIndicator } from 'react-native';
 import styles from './event_list_styles';
 import FloatingButton from '../../Components/FloatingButton';
@@ -45,12 +44,8 @@ const EventList = ({ route, navigation }) => {
     getUserId();
   }, []);
 
+//to get event id of favourited event
 
-
-
-  // useLayoutEffect(() => {
-  //   console.log(favEvent, 'My EventID');
-  // }, [favEvent]);
   useEffect(() => {
     if (UserId) {
       db.transaction((tx) => {
@@ -71,7 +66,7 @@ const EventList = ({ route, navigation }) => {
   }, [UserId])
 
 
-
+//Dailouge box to exit app
 
   useEffect(() => {
     const backAction = () => {
@@ -100,6 +95,9 @@ const EventList = ({ route, navigation }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
+
+  //Desplaying events from db
+
   useEffect(() => {
     if (isFocused) {
       var temp = [];
@@ -120,6 +118,7 @@ const EventList = ({ route, navigation }) => {
     }
   }, [isFocused, isFavouriteFilterActive]);
 
+  //displaying favourite event when filter is selected for favourite event
 
   useEffect(() => {
     if (isFocused) {
@@ -165,6 +164,7 @@ const EventList = ({ route, navigation }) => {
   }, [route.params]);
 
   // favourite button
+
   const toggleFavorite = (event) => {
     const updatedEvents = [...eventData];
     const index = updatedEvents.findIndex((item) => item.event_id === event.event_id);
@@ -240,7 +240,8 @@ const EventList = ({ route, navigation }) => {
 
   };
 
-  // show details
+  // show details of each event
+
   const onPressShowDetails = (eventId) => {
     navigation.navigate('showDetails', { ID: eventId, DATA: eventData });
     console.log(eventData, "SENDING DATA")
@@ -249,7 +250,6 @@ const EventList = ({ route, navigation }) => {
   }
 
   const checkIsFav = (event_id) => {
-    //console.log(event_id, '<<>>');
     var index = favEvent.findIndex((item) => item.event_id === event_id);
     if (index > 0) {
       return true;
@@ -259,6 +259,7 @@ const EventList = ({ route, navigation }) => {
     }
 
   };
+
 
   //SearchBar
 
@@ -290,16 +291,12 @@ const EventList = ({ route, navigation }) => {
     }
   };
 
-  //to Display item
-  const ItemView = ({ item, event }) => {
-    //const [isFavorite, setIsFavorite] = useState(false);
-    // const toggleFavorite = () => {
-    //   setIsFavorite(!isFavorite);
-    //   // You can add code here to update the favorite status of the item in the database or storage
-    // };
-    return (
-      <Card style={{ flex: 1, margin: 15, backgroundColor: theme.colors.secondary, borderColor: "#000000", borderWidth: 0.5 }} key={item.event_id}>
 
+  //to Display item searched
+
+  const ItemView = ({ item }) => {
+    return (
+      <Card style={styles.cardStyle} key={item.event_id}>
         <Card.Content>
           <View style={{ flexDirection: 'row', flex: 1 }}>
             <View style={{ flex: 0.9 }}>
@@ -315,8 +312,7 @@ const EventList = ({ route, navigation }) => {
             </View>
           </View>
         </Card.Content>
-
-        <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: item.event_image }} />
+        <Card.Cover style={styles.cardCover} source={{ uri: item.event_image }} />
         <Card.Content>
           <Text style={styles.DescriptionStyle}>
             <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />
@@ -350,7 +346,7 @@ const EventList = ({ route, navigation }) => {
             <View style={{ flexDirection: 'column' }}>
               <TextInput onChangeText={(text) => searchFilterFunction(text)}
                 placeholder="Search Here" style={styles.searchBar} onFocus={() => setShoulShow(false)} />
-              {noResults && <Text style={{ flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' }}>No results found.</Text>}
+              {noResults && <Text style={styles.noresultText}>No results found.</Text>}
             </View>
             <View style={{ flexDirection: 'column' }}>
               <TouchableOpacity style={styles.filterBtn} onPress={() => setShowFilterDropdown(true)}>
@@ -382,8 +378,8 @@ const EventList = ({ route, navigation }) => {
                   }}>
                     <Text style={styles.filterBtn}>Favourite Events</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: theme.colors.secondary, width: 90, height: 40, borderRadius: 18 }} onPress={() => { setShowFilterDropdown(false) }}>
-                    <Text style={{ alignSelf: 'center', marginTop: 10, color: theme.colors.primary, fontWeight: 'bold' }}>Close</Text>
+                  <TouchableOpacity style={styles.filterDropdownStyle} onPress={() => { setShowFilterDropdown(false) }}>
+                    <Text style={styles.dropdownText}>Close</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -402,8 +398,10 @@ const EventList = ({ route, navigation }) => {
           </View>
         </View>
 
+                  {/* mapping each event from db */}
+
         {shouldShow && eventData && eventData?.map(event => (
-          <Card style={{ backgroundColor: theme.colors.secondary, flex: 1, margin: 15, borderColor: '#000000', borderWidth: 0.5 }} key={event.event_id}>
+          <Card style={styles.cardStyle} key={event.event_id}>
             <Card.Content>
               <View style={{ flexDirection: 'row', flex: 1 }}>
                 <View style={{ flex: 0.9 }}>
@@ -419,7 +417,7 @@ const EventList = ({ route, navigation }) => {
                 </View>
               </View>
             </Card.Content>
-            <Card.Cover style={{ flex: 1, padding: 10, backgroundColor: '#D8D8D8' }} source={{ uri: event.event_image }} />
+            <Card.Cover style={styles.cardCover} source={{ uri: event.event_image }} />
             <Card.Content>
               <Text style={styles.DescriptionStyle}>
                 <Image source={require('../../assets/calendar_list.png')} style={{ width: 20, height: 20 }} />

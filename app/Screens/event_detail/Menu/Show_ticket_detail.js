@@ -4,6 +4,7 @@ import { FlatList, Text, View, SafeAreaView, StyleSheet, TouchableOpacity, Alert
 import { openDatabase } from 'react-native-sqlite-storage';
 import { theme } from '../../../core/style/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from './Show_ticket_detail_style';
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
@@ -13,8 +14,8 @@ const ShowTicketDetail = (props, { navigation }) => {
   let [isDialogVisible, setIsDialogVisible] = useState(false);
   const [count, setCount] = useState(0);
   const [userid, setUserid] = useState();
-  const[ticketId,setTicketId] = useState();
-  const[ticketPrice,setTicketPrice] = useState();
+  const [ticketId, setTicketId] = useState();
+  const [ticketPrice, setTicketPrice] = useState();
   const ID = props.ID
   const DATA = props.DATA
   const event = DATA.find(event => event.event_id === ID);
@@ -55,6 +56,8 @@ const ShowTicketDetail = (props, { navigation }) => {
 
   }, []);
 
+  //Delete Ticket query
+
   function DeleteTicket(id) {
     db.transaction((tx) => {
       tx.executeSql('DELETE FROM table_ticket where ticket_id=?', [id], (tx, results) => {
@@ -71,11 +74,6 @@ const ShowTicketDetail = (props, { navigation }) => {
 
       })
     });
-    // () => navigation.reset({
-    //   index: 0,
-    //   routes: [{ name: 'showDetails', params: { ID: ID, DATA: DATA } }]
-
-    // })
 
     console.log(ID)
     console.log("working")
@@ -85,99 +83,106 @@ const ShowTicketDetail = (props, { navigation }) => {
   }
 
 
-  
+  //Ticket Purchase feature  
 
-function BuyTicket(id) {
-  setIsDialogVisible(!isDialogVisible);
-  // () => navigation.reset({
-  //   index: 0,
-  //   routes: [{ name: 'showDetails', params: { ID: ID, DATA: DATA } }]
+  function BuyTicket(id) {
+    setIsDialogVisible(!isDialogVisible);
 
-  // })
+    db.transaction((tx) => {
+      tx.executeSql('INSERT INTO table_my_ticket (ticket_id,event_id,user_id,time,number_of_tickets) VALUES (?,?,?,?,?)',
+        [id, ID, userid, time, count],
+        (tx, results) => {
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            () => navigation.reset({
+              index: 0,
+              routes: [{ name: 'showDetails', params: { ID: ID, DATA: DATA } }]
 
+            })
 
-  // console.log(userid, '<<<<user ID>>>>')
-  db.transaction((tx) => {
-    tx.executeSql('INSERT INTO table_my_ticket (ticket_id,event_id,user_id,time,number_of_tickets) VALUES (?,?,?,?,?)',
-      [id, ID, userid, time, count],
-      (tx, results) => {
-        console.log('Results', results.rowsAffected);
-        if (results.rowsAffected > 0) {
+          } else Alert.alert('Generation Failed');
+        },)
+    });
+
+    db.transaction(function (tx) {
+      tx.executeSql(
+        'UPDATE table_ticket SET max_ticket = max_ticket - ? WHERE ticket_id = ?',
+        [count, id],
+        (tx, results) => {
+          console.log(max_ticket, "max ticket");
           () => navigation.reset({
             index: 0,
             routes: [{ name: 'showDetails', params: { ID: ID, DATA: DATA } }]
 
           })
 
-        } else Alert.alert('Generation Failed');
-      },)
-  });
 
-  db.transaction(function (tx) {
-    tx.executeSql(
-      'UPDATE table_ticket SET max_ticket = max_ticket - ? WHERE ticket_id = ?',
-      [count, id],
-      (tx, results) => {
-        console.log(max_ticket, "max ticket");
-        () => navigation.reset({
-          index: 0,
-          routes: [{ name: 'showDetails', params: { ID: ID, DATA: DATA } }]
+        },
+      );
+    });
 
-        })
+  }
 
 
-      },
+
+  let listViewItemSeparator = () => {
+    return (
+      <View style={styles.separator} />
     );
-  });
+  };
 
 
 
+  let listItemView = (item) => {
 
-}
+    return (
 
-let listViewItemSeparator = () => {
-  return (
-    <View style={styles.separator} />
-  );
-};
+      <View key={item.ticket_id} style={styles.listItem}>
 
-let listItemView = (item) => {
+        <View style={styles.row}>
+          <Text style={styles.title}>Ticket Type:</Text>
+          <Text style={styles.text}>{item.ticket_type}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.title}>Ticket Price: </Text>
+          <Text style={styles.text}>{item.ticket_price}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.title}>Available Tickets:</Text>
+          <Text style={styles.text}>{item.max_ticket}</Text>
+        </View>
 
-  return (
+        <View>
+          {showDelete
+            ? <View style={{ alignSelf: 'flex-end' }}>
+              <TouchableOpacity onPress={() => { DeleteTicket(item.ticket_id) }}
+                style={{ ...styles.modalButton, backgroundColor: theme.colors.primary }} >
+                <Text style={styles.modalButtonLabel}>
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </View>
+            : <View style={{ alignSelf: 'flex-end' }}>
+              {item.max_ticket > 0 && item.ticket_valid_date > new Date().getTime()
+                ?
+                <TouchableOpacity style={{ ...styles.modalButton, backgroundColor: theme.colors.primary }}
+                  onPress={() => { setIsDialogVisible(true), setTicketId(item.ticket_id), setTicketPrice(item.ticket_price) }}>
+                  <Text style={styles.modalButtonLabel}>
+                    Buy
+                  </Text>
+                </TouchableOpacity>
 
-    <View key={item.ticket_id} style={styles.listItem}>
+                : <TouchableOpacity disabled={true}
+                  style={{ ...styles.modalButton, backgroundColor: theme.colors.secondary }}>
+                  <Text style={styles.modalButtonLabel}>
+                    Buy
+                  </Text>
+                </TouchableOpacity>}
+            </View>
+          }
+        </View>
 
-      <View style={styles.row}>
-        <Text style={styles.title}>Ticket Type:</Text>
-        <Text style={styles.text}>{item.ticket_type}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.title}>Ticket Price: </Text>
-        <Text style={styles.text}>{item.ticket_price}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.title}>Available Tickets:</Text>
-        <Text style={styles.text}>{item.max_ticket}</Text>
-      </View>
-
-      <View>
-        {showDelete
-          ? <View style={{ alignSelf: 'flex-end' }}>
-            <TouchableOpacity onPress={() => { DeleteTicket(item.ticket_id) }} style={{ ...styles.modalButton, backgroundColor: theme.colors.primary }} ><Text style={styles.modalButtonLabel}>Delete</Text></TouchableOpacity>
-          </View>
-          : <View style={{ alignSelf: 'flex-end' }}>
-            {item.max_ticket > 0 && item.ticket_valid_date > new Date().getTime()
-              ?
-              <TouchableOpacity style={{ ...styles.modalButton, backgroundColor: theme.colors.primary }} onPress={()=>{setIsDialogVisible(true),setTicketId(item.ticket_id),setTicketPrice(item.ticket_price)}}><Text style={styles.modalButtonLabel}>Buy</Text></TouchableOpacity>
-
-              : <TouchableOpacity disabled={true} style={{ ...styles.modalButton, backgroundColor: theme.colors.secondary }}><Text style={styles.modalButtonLabel}>Buy</Text></TouchableOpacity>}
-          </View>
-        }
-      </View>
-
-
-
-      <View>
+        <View>
 
 
           <Modal
@@ -191,33 +196,60 @@ let listItemView = (item) => {
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
 
-                <Text style={styles.modalText}>How many tickets?</Text>
+                <Text style={styles.modalText}>
+                  How many tickets?
+                </Text>
+
                 <View style={{ flexDirection: 'column' }}>
+
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+
                     <TouchableOpacity onPress={() => setCount(count - 1)}>
-                      <Text style={{ fontSize: 20, borderColor: '#000000', borderWidth: 0.5, padding: 5, margin: 10, backgroundColor: theme.colors.primary, color: '#ffffff', fontWeight: 'bold' }}>-</Text>
+                      <Text style={styles.counterText}>
+                        -
+                      </Text>
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 20, borderColor: theme.colors.primary, borderWidth: 1, padding: 5, margin: 10 }}>{count}</Text>
+
+                    <Text style={styles.countStyle}>
+                      {count}
+                    </Text>
+
                     <TouchableOpacity onPress={() => setCount(count + 1)}>
-                      <Text style={{ fontSize: 20, borderColor: '#000000', borderWidth: 0.5, padding: 5, margin: 10, backgroundColor: theme.colors.primary, color: '#ffffff', fontWeight: 'bold' }}>+</Text>
+                      <Text style={styles.counterText}>
+                        +
+                      </Text>
                     </TouchableOpacity>
+
                   </View>
+
                   <View style={{ flexDirection: 'row' }}>
+
                     <Text style={{
                       textAlign: "center",
                       fontSize: 20,
                       fontWeight: "bold",
-                      marginEnd:10
-                    }}>Total Price:</Text>
-                    <Text style={{ borderColor: theme.colors.primary, fontSize: 30, width: 100, height: 35, borderWidth: 1, alignSelf: 'center', textAlign: 'center' }}>{ticketPrice * count}</Text>
+                      marginEnd: 10
+                    }}>
+                      Total Price:
+                    </Text>
+
+                    <Text style={styles.priceStyle}>
+                      {ticketPrice * count}
+                    </Text>
+
                   </View>
+
                 </View>
 
                 <View style={styles.modalButtonLabel}>
                   <TouchableOpacity
                     style={{ ...styles.modalButton, backgroundColor: theme.colors.primary }}
                     onPress={() => { BuyTicket(ticketId) }}>
-                    <Text style={styles.modalButtonLabel}>Buy</Text>
+
+                    <Text style={styles.modalButtonLabel}>
+                      Buy
+                    </Text>
+
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -225,120 +257,39 @@ let listItemView = (item) => {
                     onPress={() => {
                       setIsDialogVisible(!isDialogVisible);
                     }}>
-                    <Text style={styles.modalButtonLabel}>Cancel</Text>
+
+                    <Text style={styles.modalButtonLabel}>
+                      Cancel
+                    </Text>
+
                   </TouchableOpacity>
+
                 </View>
               </View>
             </View>
           </Modal>
         </View>
-    </View>
+      </View>
+    );
+  };
+
+
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.innerContainer}>
+        <FlatList
+          data={TicketData}
+          ItemSeparatorComponent={listViewItemSeparator}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => listItemView(item)}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
-return (
-  <SafeAreaView style={styles.container}>
-    <View style={styles.innerContainer}>
-      <FlatList
-        data={TicketData}
-        ItemSeparatorComponent={listViewItemSeparator}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => listItemView(item)}
-      />
-    </View>
-  </SafeAreaView>
-);
-};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.secondary,
-    marginTop: 20
-  },
-  innerContainer: {
-    flex: 1,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: theme.colors.primary,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  listItem: {
-    padding: 10,
-    backgroundColor: "#ffffff",
-    borderRadius: 5,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  title: {
-    fontSize: 20,
-    color: '#000000',
-    fontWeight: '500',
-    marginRight: 5,
-  },
-  text: {
-    fontSize: 16,
-    color: '#000000',
-    textAlign: 'justify',
-  },
-  modalView: {
-    margin: 20,
-    height: 300,
-    justifyContent: 'center',
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  modalButton: {
-    margin: 10,
-    borderRadius: 5,
-    padding: 10,
-    elevation: 2,
-    minWidth: 80,
-  },
-  modalButtonLabel: {
-    flexDirection: 'row',
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-});
 
 
 export default ShowTicketDetail;

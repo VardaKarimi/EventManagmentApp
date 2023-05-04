@@ -35,31 +35,7 @@ const Home = ({ navigation }) => {
     });
    },[]);
 
-  // const Home = ({ navigation }) => {
-  //  useEffect(() => {
-  //   db.transaction(function(txn)
-  //   {
-  //     txn.executeSql(
-  //       "SELECT name FROM sqlite_master WHERE type = 'table' AND name='table_event'",
-  //       [],
-  //       function (tx,res) {
-  //         console.log('item:', res.rows.length);
-  //         if (res.rows.length == 0) {
-  //            txn.executeSql('DROP TABLE IF EXISTS table_event', []);
-  //            txn.executeSql(
-  //             'CREATE TABLE IF NOT EXISTS table_event(event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name VARCHAR(20), event_date INT(10), event_time INT(10), event_location VARCHAR(255))',
-  //            [],
-  //            )
-  //         }
-  //       }
-  //     )
-  //   });
-  //  },[]);
-
-
-
-
-  // console.log(navigation, 'home');
+  
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles
