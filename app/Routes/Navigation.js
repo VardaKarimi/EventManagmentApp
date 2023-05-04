@@ -61,7 +61,7 @@ const Navigation = ({ }) => {
           name="Home"
           component={HomeScreen}
         />
-        <Stack.Screen name="Event List" component={EventList} options={({ navigation }) => ({
+        <Stack.Screen name="EventList" component={EventList} options={({ navigation }) => ({
           headerBackVisible: false,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate('My Profile')} >
@@ -82,7 +82,7 @@ const Navigation = ({ }) => {
             backgroundColor: theme.colors.primary
           },
         }} />
-       <Stack.Screen name='UpdateEvent' component={UpdateEvent}/>
+        <Stack.Screen name='UpdateEvent' component={UpdateEvent} />
         <Stack.Screen name='CreateTicket' component={CreateTicket} options={{ title: '', headerStyle: { backgroundColor: theme.colors.primary } }} />
       </Stack.Navigator>
     </NavigationContainer>
