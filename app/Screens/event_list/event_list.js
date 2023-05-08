@@ -34,6 +34,9 @@ const EventList = ({ route, navigation }) => {
 
   const isFocused = useIsFocused();
 
+
+  // GETTING USERID FROM ASYNC
+
   useEffect(() => {
 
     const getUserId = async () => {
@@ -46,11 +49,6 @@ const EventList = ({ route, navigation }) => {
   }, []);
 
 
-
-
-  // useLayoutEffect(() => {
-  //   console.log(favEvent, 'My EventID');
-  // }, [favEvent]);
   useEffect(() => {
     if (UserId) {
       db.transaction((tx) => {
@@ -72,7 +70,7 @@ const EventList = ({ route, navigation }) => {
 
 
 
-
+  //BACK BUTTON CODE
   useEffect(() => {
     const backAction = () => {
       Alert.alert('Hold on!', 'Are you sure you want to leave the app?', [
@@ -100,6 +98,8 @@ const EventList = ({ route, navigation }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
+
+  // ALL EVENT FILTER LIST DISPLAY
   useEffect(() => {
     if (isFocused) {
       var temp = [];
@@ -120,7 +120,7 @@ const EventList = ({ route, navigation }) => {
     }
   }, [isFocused, isFavouriteFilterActive]);
 
-
+  // FAVOURITE FILTER LIST DISPLAY
   useEffect(() => {
     if (isFocused) {
       var temp1 = [];
@@ -268,9 +268,7 @@ const EventList = ({ route, navigation }) => {
 
       const newData = eventData.filter(
         function (item) {
-          const itemData = item.event_name
-            ? item.event_name.toUpperCase()
-            : ''.toUpperCase();
+          const itemData = `${item.event_name} ${item.event_address}`.toUpperCase();
           const textData = text.toUpperCase();
           return itemData.indexOf(textData) > -1;
         });
