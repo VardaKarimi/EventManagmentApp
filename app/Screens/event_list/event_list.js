@@ -264,17 +264,12 @@ const EventList = ({ route, navigation }) => {
   //SearchBar
 
   const searchFilterFunction = (text) => {
-
     if (text) {
-
-      const newData = eventData.filter(
-        function (item) {
-          const itemData = item.event_name
-            ? item.event_name.toUpperCase()
-            : ''.toUpperCase();
-          const textData = text.toUpperCase();
-          return itemData.indexOf(textData) > -1;
-        });
+      const newData = eventData.filter(function (item) {
+        const itemEventData = `${item.event_name} ${item.event_address}`.toUpperCase();
+        const searchText = text.toUpperCase();
+        return itemEventData.indexOf(searchText) > -1;
+      });
       setFilteredData(newData);
       setSearch(text);
       if (newData.length == 0) {
@@ -282,15 +277,12 @@ const EventList = ({ route, navigation }) => {
       } else {
         setNoResults(false);
       }
-
-    }
-    else {
+    } else {
       setFilteredData(eventData);
       setSearch(text);
-
     }
   };
-
+  
 
   //to Display item searched
 
