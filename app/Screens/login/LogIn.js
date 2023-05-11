@@ -1,9 +1,9 @@
 /* eslint-disable no-sequences */
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
-import React, { useRef, useState, useEffect } from 'react';
-import { TouchableOpacity, View, BackHandler, Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import React, {useState, useEffect } from 'react';
+import { TouchableOpacity, BackHandler, Alert } from 'react-native';
+
 import { Text } from 'react-native-paper';
 import styles from './login_style';
 import { Formik } from 'formik';
@@ -140,103 +140,21 @@ const LogInScreen = ({ navigation }) => {
       user => user.email === values.email,
     );
 
-    // if (emailExists) {
-    //   AsyncStorage.setItem('email', values.email);
-    //   Global.setGlobalEmail(values.email);
-    //   navigation.navigate('Home');
-    // } else {
-    //   setError('Invalid Email');
-    // }
+  
   };
-  // const [loading, setLoading] = useState();
-  // console.log(email, '<<<<email');
-  // console.log(password, '<<<<password');
-
-  // const handleLogin = () => {
-  //   // validate email and password
-  //   if (email && password) {
-  //     // pass email and password as parameters to SplashScreen
-  //     Global.setGlobalEmail(email);
-  //     console.log(email);
-  //     navigation.navigate('SplashScreen', {email, password});
-  //   }
-  // };
+ 
   return (
     <Formik
       initialValues={{ email: '', password: '' }}
       onSubmit={handleSubmit}
-    // setEmail(values.email);
-    // setPassword(values.password);
-    // Global.sampleVar = values.email;
-    // console.log(Global.sampleVar);
-    // // console.log(email);
-    // // console.log(password);
-    // Global.setGlobalEmail(values.email);
-    // try {
-    //   await AsyncStorage.setItem('email', values.email);
-    //   await AsyncStorage.setItem('password', values.password);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    // navigation.navigate('SplashScreen');
+  
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
         <Background>
           <Logo2 />
           <Header>Welcome back.</Header>
 
-          {/* <TextInput
-            placeholder={Strings.Email}
-            placeholderTextColor="#003f5c"
-            value={values.email}
-            onChangeText={handleChange('email')}
-            onBlur={handleBlur('email')}
-          />
-          {errors.email && (
-            <Text style={styles.errorMessage}>{errors.email}</Text>
-          )}
-
-
-          <TextInput
-            secureTextEntry
-            style={styles.inputText}
-            placeholder={Strings.Password}
-            placeholderTextColor="#003f5c"
-            value={values.password}
-            onChangeText={handleChange('password')}
-            onBlur={handleBlur('password')}
-          />
-          {errors.password && (
-            <Text style={styles.errorMessage}>{errors.password}</Text>
-          )} */}
-
-          {/* <View style={styles.forgotPassword}>
-            <TouchableOpacity>
-              <Text style={styles.forgot}>{Strings.Forgot_Password}</Text>
-            </TouchableOpacity>
-          </View> */}
-
-          {/* <Button
-            mode="contained"
-            // disabled={
-            //   !errors.email &&
-            //   !errors.password &&
-            //   values.email &&
-            //   values.password
-            //     ? false
-            //     : true
-            // }
-            onPress={() => {
-              handleSubmit();
-              // handleLogin();
-              // LogInScreen.email = values.email;
-              // LogInScreen.password = values.password;
-              // console.log(LogInScreen.email);
-              // console.log(LogInScreen.password);
-              // navigation.navigate('Home');
-            }}>
-            LogIn
-          </Button> */}
+        
 
           {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
           <TouchableOpacity style={styles.btn} onPress={googleLogin}>

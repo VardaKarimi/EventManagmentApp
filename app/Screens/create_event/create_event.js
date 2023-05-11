@@ -14,15 +14,12 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
-import Mybutton from '../../Components/Mybutton';
 import FilePicker, { types } from 'react-native-document-picker';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import Button from '../../Components/Button';
 import Mytextinput from '../../Components/Mytextinput';
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { theme } from '../../core/style/theme';
+import styles from './create_event_style';
 
 
 
@@ -116,18 +113,9 @@ const CreateEvent = ({ navigation }) => {
   };
 
 
-
-
-  // const handleTimeChange = (event, selectedTime) => {
-  //   const currentTime = selectedTime || EventTime;
-  //   setShowTimePicker(false);
-  //   setEventTime(currentTime.toLocaleTimeString());
-  // };
-
   let register_event = () => {
-    console.log('DHirav')
-    console.log(EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath, UserId);
-    // const c = {d1 : new Date(1672720648000)}
+    // console.log(EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath, UserId);
+
     if (!EventName) {
       alert('Please fill name');
       return;
@@ -249,7 +237,7 @@ const CreateEvent = ({ navigation }) => {
                 multiline={true}
                 style={{ textAlignVertical: 'top', padding: 10 }}
               />
-              {EventImagePath !== '' && <Image source={{ uri: EventImagePath }} style={{ width: 200, alignSelf: 'center', height: 200, marginTop: 20 }}></Image>}
+              {EventImagePath !== '' && <Image source={{ uri: EventImagePath }} style={styles.ImageStyle}></Image>}
               <TouchableOpacity style={styles.btn} onPress={() => {
                 if (EventImagePath !== '') {
                   setEventImagePath('');
@@ -257,12 +245,12 @@ const CreateEvent = ({ navigation }) => {
                   handleFilePicker();
                 }
               }}>
-                <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>
+                <Text style={styles.btnTextStyle}>
                   {EventImagePath !== '' ? 'Remove Image' : 'Select Image'}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btn} onPress={register_event} title="Submit">
-                <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>Submit</Text>
+                <Text style={styles.btnTextStyle}>Submit</Text>
               </TouchableOpacity>
             </KeyboardAvoidingView>
           </ScrollView>
@@ -271,23 +259,7 @@ const CreateEvent = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  datePickerStyle: {
-    width: 200,
-    marginTop: 20,
-  },
-  btn: {
-    backgroundColor: theme.colors.primary,
-    width: "50%",
-    height: 50,
-    padding: 5,
-    margin: 10,
-    borderRadius: 10,
-    alignSelf: 'center',
-    // borderWidth: 3,
-    justifyContent: 'center',
-  },
-});
+
 
 
 

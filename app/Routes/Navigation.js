@@ -61,18 +61,13 @@ const Navigation = ({ }) => {
           name="Home"
           component={HomeScreen}
         />
-        <Stack.Screen name="EventList" component={EventList} options={({ navigation }) => ({
+        {/* <Stack.Screen name="EventList" component={EventList} options={({ navigation }) => ({
           headerBackVisible: false,
-          headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('My Profile')} >
-              <Image source={require("../assets/userbtn.png")} style={{ height: 30, width: 30, }} />
-            </TouchableOpacity>
-          ),
           headerStyle: {
             backgroundColor: theme.colors.primary
           },
           title: ''
-        })} />
+        })} /> */}
         <Stack.Screen name="CreateEvent" component={CreateEvent} />
         <Stack.Screen name="Screen3" component={Screen3} />
         <Stack.Screen name="Screen4" component={Screen4} />

@@ -7,6 +7,7 @@ import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Mytextinput from "../../../Components/Mytextinput";
 import moment from "moment";
+import CreateTicket_styles from "./Create_ticket_styles";
 
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
@@ -18,18 +19,17 @@ function CreateTicket({ navigation, route }) {
   const [ticketPrice, setTicketPrice] = useState()
   const [date, setDate] = useState('')
   const [shouldShow, setShouldShow] = useState(false)
-  const [count,setCount] = useState(0)
+  const [count, setCount] = useState(0)
   const { ID, DATA } = route.params;
 
   const handleDateChange = (event, selectedDate) => {
 
     const currentDate = selectedDate || EventDate;
     setShouldShow(false);
-    // current = moment(currentDate).format('DD MMM YYYY')
     setDate(currentDate.getTime());
 
   };
-  const handleShow = ()=>{
+  const handleShow = () => {
     setShouldShow(true)
   }
 
@@ -52,11 +52,11 @@ function CreateTicket({ navigation, route }) {
       console.log(ticketType, ticketPrice, date, ID)
       tx.executeSql(
         'INSERT INTO table_ticket (event_id, ticket_type, ticket_price,ticket_valid_date,max_ticket) VALUES (?,?,?,?,?)',
-        [ID, ticketType, ticketPrice, date,count],
+        [ID, ticketType, ticketPrice, date, count],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
-            navigation.navigate('showDetails',{ID:ID,DATA:DATA})
+            navigation.navigate('showDetails', { ID: ID, DATA: DATA })
 
           } else Alert.alert('Generation Failed');
         },
@@ -69,23 +69,30 @@ function CreateTicket({ navigation, route }) {
   return (
     <View style={CreateTicket_styles.mainContainer}>
       <View style={CreateTicket_styles.ViewStyle}>
-        <Mytextinput placeholder="Enter Ticket Type" maxLength={8} style={CreateTicket_styles.TextInputStyle} onChangeText={(text) => setTicketType(text)} />
+        <Mytextinput placeholder="Enter Ticket Type"
+          maxLength={8}
+          style={CreateTicket_styles.TextInputStyle}
+          onChangeText={(text) => setTicketType(text)} />
       </View>
 
       <View style={CreateTicket_styles.ViewStyle}>
-        <Mytextinput placeholder="Enter Price" maxLength={4} style={CreateTicket_styles.TextInputStyle} keyboardType='numeric' onChangeText={(text) => setTicketPrice(text)} />
+        <Mytextinput placeholder="Enter Price"
+          maxLength={4}
+          style={CreateTicket_styles.TextInputStyle}
+          keyboardType='numeric'
+          onChangeText={(text) => setTicketPrice(text)} />
       </View>
 
       <View style={CreateTicket_styles.ViewStyle}>
-        
+
         <Mytextinput
           style={CreateTicket_styles.TextInputStyle}
-          
+
           editable={false}
           placeholder="Valid Upto Date"
           value={date ? moment(date).format('DD MMM YYYY') : ''}
-          iconName = {'calendar-outline'}
-          handleIconPress = {handleShow}
+          iconName={'calendar-outline'}
+          handleIconPress={handleShow}
         />
         {shouldShow && (
           <DateTimePicker
@@ -97,15 +104,15 @@ function CreateTicket({ navigation, route }) {
 
       </View>
       <View style={CreateTicket_styles.ViewStyle}>
-        <Text style={{fontSize:20,color:'#000000'}}>Tickets Available:</Text>
-        <TouchableOpacity onPress={()=>setCount(count+1)}>
-          <Text style={{fontSize:20,borderColor:theme.colors.primary,borderWidth:1,padding:5,margin:10}}>+</Text>
+        <Text style={{ fontSize: 20, color: '#000000' }}>Tickets Available:</Text>
+        <TouchableOpacity onPress={() => setCount(count + 1)}>
+          <Text style={CreateTicket_styles.counterTextStyle}>+</Text>
         </TouchableOpacity>
-        <Text style={{fontSize:20,borderColor:theme.colors.primary,borderWidth:1,padding:10,margin:10}}>{count}</Text>
-        <TouchableOpacity onPress={()=>setCount(count-1)}>
-          <Text style={{fontSize:20,borderColor:theme.colors.primary,borderWidth:1,padding:5,margin:10}}>-</Text>
+        <Text style={CreateTicket_styles.counterTextStyle}>{count}</Text>
+        <TouchableOpacity onPress={() => setCount(count - 1)}>
+          <Text style={CreateTicket_styles.counterTextStyle}>-</Text>
         </TouchableOpacity>
-        
+
       </View>
 
       <View>
@@ -117,42 +124,5 @@ function CreateTicket({ navigation, route }) {
     </View>
   )
 }
-const CreateTicket_styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    backgroundColor: theme.colors.secondary
-  },
-  ViewStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent:'center'
 
-  },
-  TextStyle: {
-    padding: 5,
-    margin: 5,
-    fontSize: 20,
-    color: '#ffffff',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 15
-
-  },
-  TextInputStyle: {
-    padding: 10,
-    width:300,
-    fontSize: 15,
-    marginTop: 10,
-
-  },
-  btn: {
-    borderWidth: 1, justifyContent: 'center',
-    alignSelf: 'center',
-    fontSize: 20,
-    backgroundColor: theme.colors.primary,
-    color: '#ffffff',
-    padding: 10,
-    margin: 10
-
-  }
-})
 export default CreateTicket;

@@ -72,6 +72,25 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
+  cardStyle: {
+    backgroundColor: theme.colors.secondary,
+    flex: 1,
+    margin: 15,
+    borderColor: '#000000',
+    borderWidth: 0.5
+  },
+  cardCover:{
+    flex: 1, padding: 10, backgroundColor: '#D8D8D8'
+  },
+  noresultText:{
+    flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' 
+  },
+  filterDropdownStyle:{
+    backgroundColor: theme.colors.secondary, width: 90, height: 40, borderRadius: 18 
+  },
+  dropdownText:{
+    alignSelf: 'center', marginTop: 10, color: theme.colors.primary, fontWeight: 'bold'
+  },
 })
 
 export default styles;

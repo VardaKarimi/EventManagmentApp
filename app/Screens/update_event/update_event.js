@@ -10,28 +10,29 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Mytextinput from '../../Components/Mytextinput';
-import Mybutton from '../../Components/Mybutton';
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
-import Iconic from 'react-native-vector-icons/Ionicons';
 import Mytext from '../../Components/Mytext';
 import styles from './update_event_styles';
+import { useIsFocused } from '@react-navigation/native';
 
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
 
 const UpdateEvent = ({ navigation, route }) => {
-  const { event } = route.params;
+  const { ID, DATA } = route.params;
 
-
-  let [inputEventId, setInputEventId] = useState(event.event_id);
-  let [EventName, setEventName] = useState(event.event_name);
-  let [EventDate, setEventDate] = useState(event.event_date);
-  let [EventTime, setEventTime] = useState(event.event_time);
-  let [EventAddress, setEventAddress] = useState(event.event_address);
-  let [EventDescription, setEventDescription] = useState(event.event_description);
+  let [inputEventId, setInputEventId] = useState(ID);
+  let [EventName, setEventName] = useState(DATA.event_name);
+  let [EventDate, setEventDate] = useState(DATA.event_date);
+  let [EventTime, setEventTime] = useState(DATA.event_time);
+  let [EventAddress, setEventAddress] = useState(DATA.event_address);
+  let [EventDescription, setEventDescription] = useState(DATA.event_description);
+  const[eventData,setEventData] = useState([])
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const isFocused = useIsFocused();
+
 
 
   console.log(inputEventId)
@@ -40,7 +41,7 @@ const UpdateEvent = ({ navigation, route }) => {
     setShowDatePicker(true);
   };
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (ID, selectedDate) => {
 
     const currentDate = selectedDate || EventDate;
     setShowDatePicker(false);
@@ -62,7 +63,7 @@ const UpdateEvent = ({ navigation, route }) => {
     setShowTimePicker(false);
   };
 
-  const handleTimeChange = (event, selectedTime) => {
+  const handleTimeChange = (ID, selectedTime) => {
     hideTimePickerHandler();
     if (selectedTime !== undefined) {
       const time = selectedTime.toISOString().substr(11, 8);
@@ -79,7 +80,6 @@ const UpdateEvent = ({ navigation, route }) => {
   };
 
   React.useEffect(() => {
-    console.log(inputEventId);
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM table_event where event_id = ?',
@@ -97,6 +97,26 @@ const UpdateEvent = ({ navigation, route }) => {
       );
     });
   }, []);
+
+
+  React.useEffect(() => {
+    if (isFocused) {
+      var temp = [];
+      db.transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM table_event ORDER BY event_id DESC',
+          [],
+          (tx, results) => {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
+
+            setEventData(temp);
+          }
+        );
+      });
+    }
+  }, [isFocused]);
 
   let updateEvent = () => {
 
@@ -139,7 +159,7 @@ const UpdateEvent = ({ navigation, route }) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('showDetails', { eventId: inputEventId }),
+                  onPress: () => navigation.navigate('showDetails', { ID: inputEventId ,DATA:eventData}),
                 },
               ],
               { cancelable: false },

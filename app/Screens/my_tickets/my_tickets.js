@@ -47,23 +47,10 @@ const MyTickets = () => {
         });
     }, [id]);
 
-    // useEffect(() => {
-    //     db.transaction((tx) => {
-    //         tx.executeSql('SELECT * FROM table_ticket INNER JOIN table_my_ticket ON table_ticket.ticket_id = table_my_ticket.ticket_id WHERE table_my_ticket.user_id = ? ORDER BY table_ticket.ticket_id DESC',
-    //             [id], (tx, results) => {
-    //                 var temp = [];
-    //                 for (let i = 0; i < results.rows.length; ++i)
-    //                     temp.push(results.rows.item(i));
-    //                 setFlatListItems(temp);
-    //                 console.log(flatListItems, '<<<Ticket data>>>')
-    //             });
-    //     });
-    // }, [id]);
-
     let listViewItemSeparator = () => {
         return (
             <View
-                style={{ height: 1, width: '100%', backgroundColor: theme.colors.primary,marginTop:20 }}
+                style={{ height: 1, width: '100%', backgroundColor: theme.colors.primary, marginTop: 20 }}
             />
         );
     };
@@ -76,14 +63,14 @@ const MyTickets = () => {
                     style={{ backgroundColor: theme.colors.secondary, padding: 20 }}>
                     <Title style={event_detail_styles.TitleStyle}>{item.event_name}</Title>
                     <Image style={event_detail_styles.ImageStyle} source={{ uri: item.event_image }} />
-                    <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Date: </Text>
-                    <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{moment(item.event_date).format('DD MMM YYYY')}</Text>
-                    <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Time: </Text>
-                    <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}>{moment(item.event_time).format('LT')}</Text>
-                    <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> Location: </Text>
-                    <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5 }}> {item.event_address}</Text>
-                    <Text style={{ fontSize: 20, color: "#000000", fontWeight: 500 }}> About:</Text>
-                    <Text style={{ fontSize: 16, color: "#000000", marginLeft: 5, textAlign: 'justify' }}> {item.event_description}</Text>
+                    <Text style={event_detail_styles.headingStyle}> Date: </Text>
+                    <Text style={event_detail_styles.detailStyle}>{moment(item.event_date).format('DD MMM YYYY')}</Text>
+                    <Text style={event_detail_styles.headingStyle}> Time: </Text>
+                    <Text style={event_detail_styles.detailStyle}>{moment(item.event_time).format('LT')}</Text>
+                    <Text style={event_detail_styles.headingStyle}> Location: </Text>
+                    <Text style={event_detail_styles.detailStyle}> {item.event_address}</Text>
+                    <Text style={event_detail_styles.headingStyle}> About:</Text>
+                    <Text style={event_detail_styles.detailStyle}> {item.event_description}</Text>
 
                 </View>
                 <View key={item.ticket_id} style={styles.listItem}>
@@ -107,9 +94,9 @@ const MyTickets = () => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1 ,backgroundColor:theme.colors.secondary}}>
-            <View style={{ flex: 1, backgroundColor:theme.colors.secondary }}>
-                <View style={{ flex: 1,margin:20  }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.secondary }}>
+            <View style={{ flex: 1, backgroundColor: theme.colors.secondary }}>
+                <View style={{ flex: 1, margin: 20 }}>
                     <FlatList
                         data={flatListItems}
                         ItemSeparatorComponent={listViewItemSeparator}
@@ -169,5 +156,6 @@ const styles = StyleSheet.create({
         height: 200,
         marginBottom: 10
     },
+   
 
 })
