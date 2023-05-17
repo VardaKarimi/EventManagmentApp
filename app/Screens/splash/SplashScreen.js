@@ -2,7 +2,6 @@
 import { StyleSheet } from 'react-native';
 import React, { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { userData } from '../constants/StaticData';
 import { theme } from '../../core/style/theme';
 import Background from '../../Components/Background';
 import Logo2 from '../../Components/Logo2';

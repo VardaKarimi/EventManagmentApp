@@ -43,7 +43,6 @@ export function createTableFavouriteEvent(db) {
             "SELECT name FROM sqlite_master WHERE type='table' AND name='table_favourite_event'",
             [],
             function (tx, res) {
-                console.log('item:', res.rows.length);
                 if (res.rows.length === 0) {
                     txn.executeSql('DROP TABLE IF EXISTS table_favourite_event', []);
                     txn.executeSql(
@@ -62,7 +61,6 @@ export function createTableTicket(db) {
             "SELECT name FROM sqlite_master WHERE type='table' AND name='table_ticket'",
             [],
             function (tx, res) {
-                // console.log('item:', res.rows.length);
                 if (res.rows.length === 0) {
                     txn.executeSql('DROP TABLE IF EXISTS table_ticket', []);
                     txn.executeSql(
@@ -81,7 +79,6 @@ export function createTableMyTicket(db) {
             "SELECT name FROM sqlite_master WHERE type='table' AND name='table_my_ticket'",
             [],
             function (tx, res) {
-                // console.log('item:', res.rows.length);
                 if (res.rows.length === 0) {
                     txn.executeSql('DROP TABLE IF EXISTS table_ticket', []);
                     txn.executeSql(

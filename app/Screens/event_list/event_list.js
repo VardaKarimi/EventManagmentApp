@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, TouchableWithoutFeedback, Alert, LogBox } from 'react-native';
 import { Card, Button, Title} from 'react-native-paper';
-import { TextInput, BackHandler, ActivityIndicator } from 'react-native';
+import { TextInput, BackHandler} from 'react-native';
 import styles from './event_list_styles';
 import FloatingButton from '../../Components/FloatingButton';
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -29,7 +29,6 @@ const EventList = ({ route, navigation }) => {
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [isFavouriteFilterActive, setIsFavouriteFilterActive] = useState(false);
   let [UserId, setUserId] = useState('');
-  const [loading, setLoading] = useState(true);
 
   const isFocused = useIsFocused();
 

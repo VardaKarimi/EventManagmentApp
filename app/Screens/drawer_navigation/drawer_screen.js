@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import EventList from '../event_list/event_list';
-import Home from '../HomeScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../core/style/theme';
 import UserProfile from '../user_profile/user_profile';

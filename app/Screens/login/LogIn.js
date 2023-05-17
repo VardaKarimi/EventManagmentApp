@@ -3,15 +3,12 @@
 // eslint-disable-next-line prettier/prettier
 import React, {useState, useEffect } from 'react';
 import { TouchableOpacity, BackHandler, Alert } from 'react-native';
-
 import { Text } from 'react-native-paper';
 import styles from './login_style';
 import { Formik } from 'formik';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Background from '../../Components/Background';
 import Header from '../../Components/Header';
-import Button from '../../Components/Button';
-import staticData from '../../core/constants/StaticData';
 import { openDatabase } from 'react-native-sqlite-storage';
 import Logo2 from '../../Components/Logo2';
 import { createTableUserDetails, createTableEvent, createTableFavouriteEvent, createTableMyTicket, createTableTicket } from '../../Database/database';
@@ -24,9 +21,6 @@ var db = openDatabase({ name: 'EventDatabase1.db' });
 
 
 const LogInScreen = ({ navigation }) => {
-  // console.log(navigation, 'navigation');
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -134,22 +128,13 @@ const LogInScreen = ({ navigation }) => {
     }
   };
 
-  const handleSubmit = values => {
-    console.log(staticData.userData);
-    const emailExists = staticData.userData.some(
-      user => user.email === values.email,
-    );
-
-  
-  };
  
   return (
     <Formik
-      initialValues={{ email: '', password: '' }}
-      onSubmit={handleSubmit}
+    
   
     >
-      {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+      
         <Background>
           <Logo2 />
           <Header>Welcome back.</Header>
@@ -161,7 +146,7 @@ const LogInScreen = ({ navigation }) => {
             <Text style={{ color: 'white', padding: 10, alignSelf: 'center', fontWeight: 'bold' }}>SignIn With Google</Text>
           </TouchableOpacity>
         </Background>
-      )}
+      
     </Formik>
   );
 };

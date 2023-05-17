@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { StyleSheet } from 'react-native';
-import Background from '../../Components/Background';
 import { theme } from '../../core/style/theme';
 
 const styles = StyleSheet.create({

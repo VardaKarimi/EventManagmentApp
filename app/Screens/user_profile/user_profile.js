@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
 import { theme } from '../../core/style/theme';
-// import Button from '../../Components/Button';
 import styles from './user_profile_style';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -15,7 +14,6 @@ import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'EventDatabase1.db' });
 
 const UserProfile = ({ navigation }) => {
-    const isFocused = useIsFocused();
     let [userData, setUserData] = useState(null);
     let [id, setId] = useState('');
     let [isDialogVisible, setIsDialogVisible] = useState(false);
