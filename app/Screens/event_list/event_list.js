@@ -6,8 +6,8 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { View, Text, ScrollView, TouchableOpacity, StatusBar, Image, Modal, TouchableWithoutFeedback, Alert, LogBox } from 'react-native';
-import { Card, Button, Title} from 'react-native-paper';
-import { TextInput, BackHandler} from 'react-native';
+import { Card, Button, Title } from 'react-native-paper';
+import { TextInput, BackHandler } from 'react-native';
 import styles from './event_list_styles';
 import FloatingButton from '../../Components/FloatingButton';
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -46,7 +46,7 @@ const EventList = ({ route, navigation }) => {
     getUserId();
   }, []);
 
-//to get event id of favourited event
+  //to get event id of favourited event
 
   useEffect(() => {
     if (UserId) {
@@ -68,7 +68,7 @@ const EventList = ({ route, navigation }) => {
   }, [UserId])
 
 
-//Dailouge box to exit app
+  //Dailouge box to exit app
 
   useEffect(() => {
     const backAction = () => {
@@ -282,7 +282,7 @@ const EventList = ({ route, navigation }) => {
       setSearch(text);
     }
   };
-  
+
 
   //to Display item searched
 
@@ -390,7 +390,7 @@ const EventList = ({ route, navigation }) => {
           </View>
         </View>
 
-                  {/* mapping each event from db */}
+        {/* mapping each event from db */}
 
         {shouldShow && eventData && eventData?.map(event => (
           <Card style={styles.cardStyle} key={event.event_id}>

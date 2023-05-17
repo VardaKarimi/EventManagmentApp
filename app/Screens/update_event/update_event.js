@@ -28,7 +28,7 @@ const UpdateEvent = ({ navigation, route }) => {
   let [EventTime, setEventTime] = useState(DATA.event_time);
   let [EventAddress, setEventAddress] = useState(DATA.event_address);
   let [EventDescription, setEventDescription] = useState(DATA.event_description);
-  const[eventData,setEventData] = useState([])
+  const [eventData, setEventData] = useState([])
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const isFocused = useIsFocused();
@@ -159,7 +159,7 @@ const UpdateEvent = ({ navigation, route }) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('showDetails', { ID: inputEventId ,DATA:eventData}),
+                  onPress: () => navigation.navigate('showDetails', { ID: inputEventId, DATA: eventData }),
                 },
               ],
               { cancelable: false },
@@ -172,7 +172,7 @@ const UpdateEvent = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: 20 }}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <KeyboardAvoidingView
               behavior="padding"
