@@ -32,6 +32,9 @@ const EventList = ({ route, navigation }) => {
 
   const isFocused = useIsFocused();
 
+
+  // GETTING USERID FROM ASYNC
+
   useEffect(() => {
 
     const getUserId = async () => {
@@ -95,8 +98,7 @@ const EventList = ({ route, navigation }) => {
   }, [navigation]);
 
 
-  //Desplaying events from db
-
+  // ALL EVENT FILTER LIST DISPLAY
   useEffect(() => {
     if (isFocused) {
       var temp = [];
@@ -117,8 +119,7 @@ const EventList = ({ route, navigation }) => {
     }
   }, [isFocused, isFavouriteFilterActive]);
 
-  //displaying favourite event when filter is selected for favourite event
-
+  // FAVOURITE FILTER LIST DISPLAY
   useEffect(() => {
     if (isFocused) {
       var temp1 = [];
