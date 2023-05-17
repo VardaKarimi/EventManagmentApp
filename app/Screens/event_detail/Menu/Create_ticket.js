@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Alert } from "react-native";
-import { StyleSheet } from 'react-native';
 import { TouchableOpacity } from "react-native";
-import { theme } from "../../../core/style/theme";
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Mytextinput from "../../../Components/Mytextinput";
@@ -22,7 +20,7 @@ function CreateTicket({ navigation, route }) {
   const [count, setCount] = useState(0)
   const { ID, DATA } = route.params;
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (selectedDate) => {
 
     const currentDate = selectedDate || EventDate;
     setShouldShow(false);

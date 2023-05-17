@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
 
-import Eventdata from '../../core/constants/EventString';
 import React, { useEffect, useState } from 'react';
 import { Title } from 'react-native-paper';
-import { View, Text, Image, Button } from 'react-native';
+import { View, Text, Image} from 'react-native';
 import 'react-native-gesture-handler';
 import { theme } from '../../core/style/theme';
 import ShowTicketDetail from './Menu/Show_ticket_detail';
@@ -26,7 +25,6 @@ function ShowDetails({ route, navigation }) {
   const isFocused = useIsFocused();
 
   const [ticketDetailKey, setTicketDetailKey] = useState(0);
-  const [userData, setUserData] = useState(null);
   const [showMenu, setShowMenu] = useState(false)
 
 

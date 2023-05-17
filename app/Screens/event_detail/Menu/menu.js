@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import * as React from 'react';
 import {View, Text, Image, TouchableOpacity,Alert} from 'react-native';
-import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
+import {Menu, MenuItem} from 'react-native-material-menu';
 import { theme } from '../../../core/style/theme';
 
 

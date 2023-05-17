@@ -114,7 +114,6 @@ const CreateEvent = ({ navigation }) => {
 
 
   let register_event = () => {
-    // console.log(EventName, EventDate, EventTime, EventAddress, EventDescription, EventImagePath, UserId);
 
     if (!EventName) {
       alert('Please fill name');
