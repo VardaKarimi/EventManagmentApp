@@ -79,16 +79,16 @@ const styles = StyleSheet.create({
     borderColor: '#000000',
     borderWidth: 0.5
   },
-  cardCover:{
+  cardCover: {
     flex: 1, padding: 10, backgroundColor: '#D8D8D8'
   },
-  noresultText:{
-    flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center' 
+  noresultText: {
+    flex: 1, color: '#000000', fontSize: 20, justifyContent: 'center', alignSelf: 'center'
   },
-  filterDropdownStyle:{
-    backgroundColor: theme.colors.secondary, width: 90, height: 40, borderRadius: 18 
+  filterDropdownStyle: {
+    backgroundColor: theme.colors.secondary, width: 90, height: 40, borderRadius: 18
   },
-  dropdownText:{
+  dropdownText: {
     alignSelf: 'center', marginTop: 10, color: theme.colors.primary, fontWeight: 'bold'
   },
 })

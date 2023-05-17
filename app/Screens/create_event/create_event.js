@@ -20,6 +20,7 @@ import Mytextinput from '../../Components/Mytextinput';
 import { openDatabase } from 'react-native-sqlite-storage';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import styles from './create_event_style';
+import { theme } from '../../core/style/theme';
 
 
 
@@ -169,7 +170,7 @@ const CreateEvent = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={{ flex: 1, backgroundColor: theme.colors.secondary }}>
         <View style={{ flex: 1 }}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <KeyboardAvoidingView

@@ -61,15 +61,24 @@ const Navigation = ({ }) => {
           },
           title: ''
         })} /> */}
-        <Stack.Screen name="CreateEvent" component={CreateEvent} />
+        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{
+          headerTintColor: '#ffffff',
+          title: 'Create Event', headerStyle: {
+            backgroundColor: theme.colors.primary
+          },
+        }} />
         <Stack.Screen name="My Profile" component={UserProfile} />
         <Stack.Screen name="showDetails" component={ShowDetails} options={{
           title: '', headerStyle: {
             backgroundColor: theme.colors.primary
           },
         }} />
-        <Stack.Screen name='UpdateEvent' component={UpdateEvent} />
-        <Stack.Screen name='CreateTicket' component={CreateTicket} options={{ title: '', headerStyle: { backgroundColor: theme.colors.primary } }} />
+        <Stack.Screen name='UpdateEvent' component={UpdateEvent} options={{
+          title: 'Edit Event', headerTintColor: '#ffffff', headerStyle: {
+            backgroundColor: theme.colors.primary
+          },
+        }} />
+        <Stack.Screen name='CreateTicket' component={CreateTicket} options={{ title: 'Add Ticket', headerTintColor: '#ffffff', headerStyle: { backgroundColor: theme.colors.primary } }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

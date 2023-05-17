@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -20,7 +21,7 @@ function CreateTicket({ navigation, route }) {
   const [count, setCount] = useState(0)
   const { ID, DATA } = route.params;
 
-  const handleDateChange = (selectedDate) => {
+  const handleDateChange = (event, selectedDate) => {
 
     const currentDate = selectedDate || EventDate;
     setShouldShow(false);
@@ -66,59 +67,64 @@ function CreateTicket({ navigation, route }) {
 
   return (
     <View style={CreateTicket_styles.mainContainer}>
-      <View style={CreateTicket_styles.ViewStyle}>
-        <Mytextinput placeholder="Enter Ticket Type"
-          maxLength={8}
-          style={CreateTicket_styles.TextInputStyle}
-          onChangeText={(text) => setTicketType(text)} />
-      </View>
+      <View style={{ marginTop: 20 }}>
+        <View style={CreateTicket_styles.ViewStyle}>
+          <Mytextinput placeholder="Enter Ticket Type"
+            maxLength={8}
+            style={CreateTicket_styles.TextInputStyle}
+            onChangeText={(text) => setTicketType(text)} />
+        </View>
 
-      <View style={CreateTicket_styles.ViewStyle}>
-        <Mytextinput placeholder="Enter Price"
-          maxLength={4}
-          style={CreateTicket_styles.TextInputStyle}
-          keyboardType='numeric'
-          onChangeText={(text) => setTicketPrice(text)} />
-      </View>
+        <View style={CreateTicket_styles.ViewStyle}>
+          <Mytextinput placeholder="Enter Price"
+            style={CreateTicket_styles.TextInputStyle}
+            keyboardType='numeric'
+            onChangeText={(text) => setTicketPrice(text)} />
+        </View>
 
-      <View style={CreateTicket_styles.ViewStyle}>
+        <View style={CreateTicket_styles.ViewStyle}>
 
-        <Mytextinput
-          style={CreateTicket_styles.TextInputStyle}
+          <Mytextinput
+            style={CreateTicket_styles.TextInputStyle2}
 
-          editable={false}
-          placeholder="Valid Upto Date"
-          value={date ? moment(date).format('DD MMM YYYY') : ''}
-          iconName={'calendar-outline'}
-          handleIconPress={handleShow}
-        />
-        {shouldShow && (
-          <DateTimePicker
-            value={new Date()}
-            display="default"
-            onChange={handleDateChange}
+            editable={false}
+            placeholder="Valid Upto Date"
+            value={date ? moment(date).format('DD MMM YYYY') : ''}
+            iconName={'calendar-outline'}
+            handleIconPress={handleShow}
           />
-        )}
+          {shouldShow && (
+            <DateTimePicker
+              value={new Date()}
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
 
+        </View>
+        <View style={CreateTicket_styles.ViewStyle}>
+          <Text style={{ fontSize: 20, color: '#000000' }}>Tickets Available:</Text>
+          <TouchableOpacity onPress={() => {
+            if (count > 0) {
+              setCount(count - 1);
+            }
+          }} style={{ height: 50, marginTop: 5 }}>
+            <Text style={CreateTicket_styles.counterTextStyleForCount}> - </Text>
+          </TouchableOpacity>
+          <Text style={CreateTicket_styles.countStyle}>{count}</Text>
+          <TouchableOpacity onPress={() => setCount(count + 1)} style={{ height: 50, marginTop: 5 }}>
+            <Text style={CreateTicket_styles.counterTextStyleForCount}> + </Text>
+          </TouchableOpacity>
+
+
+        </View>
+
+        <View>
+          <TouchableOpacity onPress={generateTicket} style={CreateTicket_styles.btn}>
+            <Text style={CreateTicket_styles.btnTextStyle}>Generate Ticket</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={CreateTicket_styles.ViewStyle}>
-        <Text style={{ fontSize: 20, color: '#000000' }}>Tickets Available:</Text>
-        <TouchableOpacity onPress={() => setCount(count + 1)}>
-          <Text style={CreateTicket_styles.counterTextStyle}>+</Text>
-        </TouchableOpacity>
-        <Text style={CreateTicket_styles.counterTextStyle}>{count}</Text>
-        <TouchableOpacity onPress={() => setCount(count - 1)}>
-          <Text style={CreateTicket_styles.counterTextStyle}>-</Text>
-        </TouchableOpacity>
-
-      </View>
-
-      <View>
-        <TouchableOpacity onPress={generateTicket}>
-          <Text style={CreateTicket_styles.btn}>Generate Ticket</Text>
-        </TouchableOpacity>
-      </View>
-
     </View>
   )
 }
