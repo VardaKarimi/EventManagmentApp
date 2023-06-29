@@ -25,7 +25,7 @@
     "react-native-datepicker": "^1.7.2",
     "react-native-document-picker": "^8.2.0",
     "react-native-floating-action": "^1.22.0",
-    "react-native-gesture-handler": "^2.9.0",
+    "react-native-gesture-handler": "^2.11.0",
     "react-native-material-menu": "^2.0.0",
     "react-native-modern-datepicker": "^1.0.0-beta.91",
     "react-native-neat-date-picker": "^1.4.11",
