@@ -21,7 +21,7 @@
     "formik": "^2.2.9",
     "moment": "^2.29.4",
     "react": "18.2.0",
-    "react-native": "0.71.3",
+    "react-native": "0.71.10",
     "react-native-datepicker": "^1.7.2",
     "react-native-document-picker": "^8.2.0",
     "react-native-floating-action": "^1.22.0",
